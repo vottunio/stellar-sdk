@@ -1,0 +1,93 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Coverage & test
+coverage/
+.nyc_output/
+junit.xml
+test-results/
+
+# Environment & secrets
+.env
+.env.*
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+
+# Lock files (keep only one — delete whichever you don't use)
+# package-lock.json
+# pnpm-lock.yaml
+# yarn.lock
+
+# IDE & editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.settings/
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# TypeDoc output
+docs/api/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.cache/
+
+# Optional tooling caches
+.eslintcache
+.prettiercache
+*.tgz
+
+# Rollup cache
+.rollup.cache/
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Packed tarball (npm pack)
+*.tgz
+
+# Misc
+.turbo/
+.vercel/
+.netlify/

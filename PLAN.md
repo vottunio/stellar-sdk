@@ -125,19 +125,19 @@
 
 ## Tranche 1 — MVP (Weeks 1-5) — $28,800
 
-### Phase 1.0: Project Setup (Week 1)
+### Phase 1.0: Project Setup (Week 1) ✅ COMPLETED
 
-| # | Task | Details |
-|---|------|---------|
-| 1.0.1 | Init repo | `pnpm init`, `.gitignore`, `.editorconfig`, `.nvmrc` (Node 18) |
-| 1.0.2 | TypeScript config | `tsconfig.json` — strict mode, `ES2020` target, path aliases |
-| 1.0.3 | Rollup config | ESM + CJS + UMD builds, tree-shaking, source maps |
-| 1.0.4 | Jest config | `ts-jest`, coverage thresholds, test path patterns |
-| 1.0.5 | ESLint + Prettier | `@typescript-eslint`, import ordering, Prettier integration |
-| 1.0.6 | CI pipeline | GitHub Actions: lint, test, build on PR |
-| 1.0.7 | Core types | `src/types/` — shared interfaces, enums, base types |
-| 1.0.8 | Error framework | `StellarError`, `WalletError`, `ApiError`, `ConfigError` — typed error hierarchy with codes |
-| 1.0.9 | Entry point | `src/index.ts` — `WirexSDK` main class scaffold |
+| # | Task | Details | Status |
+|---|------|---------|--------|
+| 1.0.1 | Init repo | `pnpm init`, `.gitignore`, `.editorconfig`, `.nvmrc` (Node 22) | ✅ Done |
+| 1.0.2 | TypeScript config | `tsconfig.json` — strict mode, `ES2020` target, path aliases | ✅ Done |
+| 1.0.3 | Rollup config | ESM + CJS + UMD builds, tree-shaking, source maps | ✅ Done |
+| 1.0.4 | Jest config | `ts-jest`, coverage thresholds, test path patterns | ✅ Done |
+| 1.0.5 | ESLint + Prettier | `@typescript-eslint`, import ordering, Prettier integration | ✅ Done |
+| 1.0.6 | CI pipeline | GitHub Actions: lint, test, build on PR (Node 18/20/22 matrix) | ✅ Done |
+| 1.0.7 | Core types | `src/types/` — shared interfaces, enums, base types (6 type files) | ✅ Done |
+| 1.0.8 | Error framework | `StellarError`, `WalletError`, `ApiError`, `ConfigError` — typed error hierarchy with codes | ✅ Done |
+| 1.0.9 | Entry point | `src/index.ts` — `WirexSDK` main class scaffold + `ConfigManager` bootstrap | ✅ Done |
 
 ### Phase 1.1: Configuration Module (Week 1-2)
 
