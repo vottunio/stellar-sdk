@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2020", "DOM"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@wirex/types/*": ["src/types/*"],
+      "@wirex/errors/*": ["src/errors/*"],
+      "@wirex/config/*": ["src/config/*"],
+      "@wirex/wallet/*": ["src/wallet/*"],
+      "@wirex/stellar/*": ["src/stellar/*"],
+      "@wirex/transaction/*": ["src/transaction/*"],
+      "@wirex/api/*": ["src/api/*"],
+      "@wirex/websocket/*": ["src/websocket/*"],
+      "@wirex/reference/*": ["src/reference/*"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "tests", "examples"]
+}
