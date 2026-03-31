@@ -4,7 +4,10 @@
       "Bash(dir:*)",
       "WebSearch",
       "WebFetch(domain:partner.wirexpaychain.com)",
-      "WebFetch(domain:docs.wirexapp.com)"
+      "WebFetch(domain:docs.wirexapp.com)",
+      "Bash(pnpm test:*)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(pnpm run:*)"
     ]
   }
 }

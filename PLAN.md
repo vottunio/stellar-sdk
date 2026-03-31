@@ -143,15 +143,15 @@
 
 **File:** `src/config/ConfigManager.ts`
 
-| # | Task | API | Details |
-|---|------|-----|---------|
-| 1.1.1 | `ConfigManager` class | `new ConfigManager(options)` | Validates and stores SDK config |
-| 1.1.2 | Network presets | `networks.ts` | Testnet/mainnet defaults (Horizon URLs, passphrases, Soroban RPC) |
-| 1.1.3 | Environment switching | `config.setNetwork('testnet' \| 'mainnet')` | Hot-switch, re-initializes clients |
-| 1.1.4 | Logging setup | `config.logging.level` | `none`, `error`, `warn`, `info`, `debug` |
-| 1.1.5 | Timeout config | `config.timeout.horizon`, `.api`, `.websocket` | Per-service timeouts with defaults |
-| 1.1.6 | Retry policies | `config.retry.maxAttempts`, `.backoffMultiplier` | Exponential backoff settings |
-| 1.1.7 | Unit tests | - | Config validation, preset loading, env switching |
+| # | Task | API | Details | Status |
+|---|------|-----|---------|--------|
+| 1.1.1 | `ConfigManager` class | `new ConfigManager(options)` | Validates and stores SDK config | ✅ Done |
+| 1.1.2 | Network presets | `networks.ts` | Testnet/mainnet defaults (Horizon URLs, passphrases, Soroban RPC) | ✅ Done |
+| 1.1.3 | Environment switching | `config.setNetwork('testnet' \| 'mainnet')` | Hot-switch, re-initializes clients | |
+| 1.1.4 | Logging setup | `config.logging.level` | `none`, `error`, `warn`, `info`, `debug` | |
+| 1.1.5 | Timeout config | `config.timeout.horizon`, `.api`, `.websocket` | Per-service timeouts with defaults | |
+| 1.1.6 | Retry policies | `config.retry.maxAttempts`, `.backoffMultiplier` | Exponential backoff settings | |
+| 1.1.7 | Unit tests | - | Config validation, preset loading, env switching | |
 
 **Config interface:**
 ```typescript
