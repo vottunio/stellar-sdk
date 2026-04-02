@@ -7,7 +7,9 @@
       "WebFetch(domain:docs.wirexapp.com)",
       "Bash(pnpm test:*)",
       "Bash(source ~/.nvm/nvm.sh)",
-      "Bash(pnpm run:*)"
+      "Bash(pnpm run:*)",
+      "Bash(grep -E \"\\\\.ts$|\\\\.json$|\\\\.rc|\\\\.nvmrc|\\\\.editorconfig\")",
+      "Bash(ls -la .gitignore .editorconfig .nvmrc package.json tsconfig.json rollup.config.ts jest.config.js .prettierrc .eslintrc*)"
     ]
   }
 }

@@ -147,11 +147,11 @@
 |---|------|-----|---------|--------|
 | 1.1.1 | `ConfigManager` class | `new ConfigManager(options)` | Validates and stores SDK config | ✅ Done |
 | 1.1.2 | Network presets | `networks.ts` | Testnet/mainnet defaults (Horizon URLs, passphrases, Soroban RPC) | ✅ Done |
-| 1.1.3 | Environment switching | `config.setNetwork('testnet' \| 'mainnet')` | Hot-switch, re-initializes clients | |
-| 1.1.4 | Logging setup | `config.logging.level` | `none`, `error`, `warn`, `info`, `debug` | |
-| 1.1.5 | Timeout config | `config.timeout.horizon`, `.api`, `.websocket` | Per-service timeouts with defaults | |
-| 1.1.6 | Retry policies | `config.retry.maxAttempts`, `.backoffMultiplier` | Exponential backoff settings | |
-| 1.1.7 | Unit tests | - | Config validation, preset loading, env switching | |
+| 1.1.3 | Environment switching | `config.setNetwork('testnet' \| 'mainnet')` | Hot-switch, re-initializes clients | ✅ Done |
+| 1.1.4 | Logging setup | `config.logging.level` | `none`, `error`, `warn`, `info`, `debug` | ✅ Done |
+| 1.1.5 | Timeout config | `config.timeout.horizon`, `.api`, `.websocket` | Per-service timeouts with defaults | ✅ Done |
+| 1.1.6 | Retry policies | `config.retry.maxAttempts`, `.backoffMultiplier` | Exponential backoff settings | ✅ Done |
+| 1.1.7 | Unit tests | - | Config validation, preset loading, env switching | ✅ Done |
 
 **Config interface:**
 ```typescript
@@ -177,21 +177,21 @@ interface WirexSDKConfig {
 
 **Files:** `src/wallet/`
 
-| # | Task | API | Stellar SDK Usage |
-|---|------|-----|-------------------|
-| 1.2.1 | Keypair creation | `sdk.wallet.create(): Wallet` | `Keypair.random()` |
-| 1.2.2 | Import from secret | `sdk.wallet.importFromSecret(secret): Wallet` | `Keypair.fromSecret(secret)` |
-| 1.2.3 | Import from mnemonic | `sdk.wallet.importFromMnemonic(mnemonic, index?): Wallet` | `bip39` + `ed25519-hd-key` with path `m/44'/148'/{index}'` |
-| 1.2.4 | HD wallet derivation | `sdk.wallet.createHD(mnemonic?): HDWallet` | Generate mnemonic if not provided, derive accounts |
-| 1.2.5 | Get public key | `wallet.publicKey: string` | `keypair.publicKey()` |
-| 1.2.6 | Sign transaction | `wallet.sign(tx): SignedTransaction` | `transaction.sign(keypair)` |
-| 1.2.7 | External wallet: Freighter | `sdk.wallet.connectExternal('freighter'): ExternalWallet` | `@stellar/freighter-api` — `isConnected()`, `getPublicKey()`, `signTransaction()` |
-| 1.2.8 | External wallet: Lobstr | `sdk.wallet.connectExternal('lobstr'): ExternalWallet` | Lobstr signer API |
-| 1.2.9 | Multisig support | `wallet.addSigner(publicKey, weight)` | `Operation.setOptions({ signer })` |
-| 1.2.10 | Wallet backup/export | `wallet.exportMnemonic()`, `wallet.exportEncrypted(password)` | Encrypt secret key with password |
-| 1.2.11 | Balance query shortcut | `wallet.getBalances(): Balance[]` | `server.loadAccount(publicKey)` → `.balances` |
-| 1.2.12 | Unit tests | - | Creation, import, signing, derivation paths |
-| 1.2.13 | Integration tests | - | Create + fund on testnet via Friendbot |
+| # | Task | API | Stellar SDK Usage | Status |
+|---|------|-----|-------------------|--------|
+| 1.2.1 | Keypair creation | `sdk.wallet.create(): Wallet` | `Keypair.random()` | ✅ Done |
+| 1.2.2 | Import from secret | `sdk.wallet.importFromSecret(secret): Wallet` | `Keypair.fromSecret(secret)` | ✅ Done |
+| 1.2.3 | Import from mnemonic | `sdk.wallet.importFromMnemonic(mnemonic, index?): Wallet` | `bip39` + `ed25519-hd-key` with path `m/44'/148'/{index}'` | ✅ Done |
+| 1.2.4 | HD wallet derivation | `sdk.wallet.createHD(mnemonic?): HDWallet` | Generate mnemonic if not provided, derive accounts | ✅ Done |
+| 1.2.5 | Get public key | `wallet.publicKey: string` | `keypair.publicKey()` | ✅ Done |
+| 1.2.6 | Sign transaction | `wallet.sign(tx): SignedTransaction` | `transaction.sign(keypair)` | ✅ Done |
+| 1.2.7 | External wallet: Freighter | `sdk.wallet.connectExternal('freighter'): ExternalWallet` | `@stellar/freighter-api` — `isConnected()`, `getPublicKey()`, `signTransaction()` | ✅ Done |
+| 1.2.8 | External wallet: Lobstr | `sdk.wallet.connectExternal('lobstr'): ExternalWallet` | Lobstr signer API | ✅ Done |
+| 1.2.9 | Multisig support | `wallet.addSigner(publicKey, weight)` | `Operation.setOptions({ signer })` | ✅ Done |
+| 1.2.10 | Wallet backup/export | `wallet.exportMnemonic()`, `wallet.exportEncrypted(password)` | Encrypt secret key with password | ✅ Done |
+| 1.2.11 | Balance query shortcut | `wallet.getBalances(): Balance[]` | `server.loadAccount(publicKey)` → `.balances` | ✅ Done |
+| 1.2.12 | Unit tests | - | Creation, import, signing, derivation paths | ✅ Done |
+| 1.2.13 | Integration tests | - | Create + fund on testnet via Friendbot | ✅ Done |
 
 ### Phase 1.3: Transaction Lifecycle Module (Weeks 3-4)
 

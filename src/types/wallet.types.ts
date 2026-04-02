@@ -28,6 +28,26 @@ export interface Wallet {
 export interface ManagedWallet extends Wallet {
   /** Export the raw secret key (S...) */
   exportSecret(): string;
+
+  /** Export the secret key encrypted with a password. Returns a JSON string. */
+  exportEncrypted(password: string): string;
+
+  /**
+   * Build a signed transaction that adds a co-signer to this account.
+   * Returns the signed transaction XDR ready for submission.
+   */
+  addSigner(signerPublicKey: string, weight: number): Promise<string>;
+}
+
+/**
+ * Encrypted wallet export payload.
+ */
+export interface EncryptedWalletExport {
+  version: 1;
+  publicKey: string;
+  ciphertext: string;
+  nonce: string;
+  salt: string;
 }
 
 /**

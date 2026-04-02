@@ -2,6 +2,14 @@ import { ConfigManager } from '../../../src/config/ConfigManager';
 import { ConfigError } from '../../../src/errors/ConfigError';
 
 describe('ConfigManager', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'info').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   describe('constructor', () => {
     it('should create with minimal testnet config', () => {
       const cm = new ConfigManager({ network: 'testnet' });
@@ -137,6 +145,14 @@ describe('ConfigManager', () => {
       expect(() => cm.setNetwork('invalid' as never)).toThrow(ConfigError);
     });
 
+    it('should log a message when switching networks', () => {
+      const cm = new ConfigManager({ network: 'testnet', logging: { level: 'info' } });
+      cm.setNetwork('mainnet');
+      expect(console.info).toHaveBeenCalledWith(
+        expect.stringContaining('Network switched to mainnet'),
+      );
+    });
+
     it('should preserve non-network config after switching', () => {
       const cm = new ConfigManager({
         network: 'testnet',
@@ -149,6 +165,21 @@ describe('ConfigManager', () => {
 
       expect(config.logging.level).toBe('debug');
       expect(config.timeout.horizon).toBe(60_000);
+    });
+  });
+
+  describe('getLogger', () => {
+    it('should return a Logger instance with the configured level', () => {
+      const cm = new ConfigManager({ network: 'testnet', logging: { level: 'debug' } });
+      const logger = cm.getLogger();
+
+      expect(logger).toBeDefined();
+      expect(logger.getLevel()).toBe('debug');
+    });
+
+    it('should default logger to "none" level', () => {
+      const cm = new ConfigManager({ network: 'testnet' });
+      expect(cm.getLogger().getLevel()).toBe('none');
     });
   });
 });
