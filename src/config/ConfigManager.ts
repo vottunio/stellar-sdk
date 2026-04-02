@@ -7,6 +7,7 @@ import {
 } from '../types/config.types';
 
 import { DEFAULT_LOGGING, DEFAULT_RETRY, DEFAULT_TIMEOUT } from './defaults';
+import { Logger } from './Logger';
 import { NETWORK_PRESETS } from './networks';
 
 const VALID_NETWORKS: NetworkType[] = ['testnet', 'mainnet'];
@@ -17,14 +18,21 @@ const VALID_LOG_LEVELS: LogLevel[] = ['none', 'error', 'warn', 'info', 'debug'];
  */
 export class ConfigManager {
   private config: ResolvedConfig;
+  private readonly logger: Logger;
 
   constructor(options: WirexSDKConfig) {
     this.config = this.resolve(options);
+    this.logger = new Logger(this.config.logging.level);
   }
 
   /** Get the current resolved configuration. */
   getConfig(): Readonly<ResolvedConfig> {
     return this.config;
+  }
+
+  /** Get the SDK logger instance. */
+  getLogger(): Logger {
+    return this.logger;
   }
 
   /** Hot-switch the active network. Re-resolves URLs and passphrase. */
@@ -38,6 +46,7 @@ export class ConfigManager {
       sorobanRpcUrl: preset.sorobanRpcUrl,
       networkPassphrase: preset.networkPassphrase,
     };
+    this.logger.info(`Network switched to ${network}`);
   }
 
   /** Resolve user options into a fully populated config. */
