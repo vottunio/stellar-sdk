@@ -193,29 +193,29 @@ interface WirexSDKConfig {
 | 1.2.12 | Unit tests | - | Creation, import, signing, derivation paths | ✅ Done |
 | 1.2.13 | Integration tests | - | Create + fund on testnet via Friendbot | ✅ Done |
 
-### Phase 1.3: Transaction Lifecycle Module (Weeks 3-4)
+### Phase 1.3: Transaction Lifecycle Module (Weeks 3-4) ✅ COMPLETED
 
 **Files:** `src/transaction/`
 
-| # | Task | API | Stellar SDK Usage |
-|---|------|-----|-------------------|
-| 1.3.1 | TransactionBuilder | `sdk.transaction(): TxBuilder` | Wraps `new TransactionBuilder(account, { fee, networkPassphrase })` |
-| 1.3.2 | Add payment op | `.addPayment({ destination, asset, amount })` | `.addOperation(Operation.payment({...}))` |
-| 1.3.3 | Add create account | `.addCreateAccount({ destination, startingBalance })` | `.addOperation(Operation.createAccount({...}))` |
-| 1.3.4 | Add change trust | `.changeTrust({ asset, limit? })` | `.addOperation(Operation.changeTrust({...}))` |
-| 1.3.5 | Add manage data | `.addManageData({ name, value })` | `.addOperation(Operation.manageData({...}))` |
-| 1.3.6 | Add path payment | `.addPathPayment({ sendAsset, sendAmount, dest, destAsset, destMin })` | `.addOperation(Operation.pathPaymentStrictSend({...}))` |
-| 1.3.7 | Memo support | `.addMemo(type, value)` | `Memo.text()`, `Memo.id()`, `Memo.hash()`, `Memo.return()` |
-| 1.3.8 | Timeout / time bounds | `.setTimeout(seconds)`, `.setTimeBounds(min, max)` | `.setTimeout(seconds)` |
-| 1.3.9 | Fee estimation | `.estimateFees(): FeeEstimate` | `server.fetchBaseFee()` × operation count |
-| 1.3.10 | Build transaction | `.build(): BuiltTransaction` | `.build()` returns `Transaction` |
-| 1.3.11 | Sign | `.sign(wallet): SignedTransaction` | `transaction.sign(keypair)` |
-| 1.3.12 | Submit | `.submit(): TransactionResult` | `server.submitTransaction(tx)` |
-| 1.3.13 | Retry logic | Auto-retry on `tx_bad_seq`, timeout | Exponential backoff, max attempts from config |
-| 1.3.14 | Status tracking | `result.waitForConfirmation(): Promise<Confirmation>` | Poll `server.transactions().transaction(hash)` |
-| 1.3.15 | Fluent chain | `sdk.transaction().addPayment({...}).addMemo(...).sign(w).submit()` | Full method chaining |
-| 1.3.16 | Unit tests | - | Builder chain, fee calc, memo types |
-| 1.3.17 | Integration tests | - | Full testnet tx: create, sign, submit, confirm |
+| # | Task | API | Stellar SDK Usage | Status |
+|---|------|-----|-------------------|--------|
+| 1.3.1 | TransactionBuilder | `sdk.transaction(): TxBuilder` | Wraps `new TransactionBuilder(account, { fee, networkPassphrase })` | ✅ Done |
+| 1.3.2 | Add payment op | `.addPayment({ destination, asset, amount })` | `.addOperation(Operation.payment({...}))` | ✅ Done |
+| 1.3.3 | Add create account | `.addCreateAccount({ destination, startingBalance })` | `.addOperation(Operation.createAccount({...}))` | ✅ Done |
+| 1.3.4 | Add change trust | `.changeTrust({ asset, limit? })` | `.addOperation(Operation.changeTrust({...}))` | ✅ Done |
+| 1.3.5 | Add manage data | `.addManageData({ name, value })` | `.addOperation(Operation.manageData({...}))` | ✅ Done |
+| 1.3.6 | Add path payment | `.addPathPayment({ sendAsset, sendAmount, dest, destAsset, destMin })` | `.addOperation(Operation.pathPaymentStrictSend({...}))` | ✅ Done |
+| 1.3.7 | Memo support | `.addMemo(type, value)` | `Memo.text()`, `Memo.id()`, `Memo.hash()`, `Memo.return()` | ✅ Done |
+| 1.3.8 | Timeout / time bounds | `.setTimeout(seconds)`, `.setTimeBounds(min, max)` | `.setTimeout(seconds)` | ✅ Done |
+| 1.3.9 | Fee estimation | `.estimateFees(): FeeEstimate` | `server.fetchBaseFee()` × operation count | ✅ Done |
+| 1.3.10 | Build transaction | `.build(): BuiltTransaction` | `.build()` returns `Transaction` | ✅ Done |
+| 1.3.11 | Sign | `.sign(wallet): SignedTransaction` | `transaction.sign(keypair)` | ✅ Done |
+| 1.3.12 | Submit | `.submit(): TransactionResult` | `server.submitTransaction(tx)` | ✅ Done |
+| 1.3.13 | Retry logic | Auto-retry on `tx_bad_seq`, timeout | Exponential backoff, max attempts from config | ✅ Done |
+| 1.3.14 | Status tracking | `result.waitForConfirmation(): Promise<Confirmation>` | Poll `server.transactions().transaction(hash)` | ✅ Done |
+| 1.3.15 | Fluent chain | `sdk.transaction().addPayment({...}).addMemo(...).sign(w).submit()` | Full method chaining | ✅ Done |
+| 1.3.16 | Unit tests | - | Builder chain, fee calc, memo types | ✅ Done |
+| 1.3.17 | Integration tests | - | Full testnet tx: create, sign, submit, confirm | ✅ Done |
 
 ### Phase 1.4: Documentation + Acceptance (Week 5)
 
