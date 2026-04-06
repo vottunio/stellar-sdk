@@ -44,6 +44,7 @@ export class WirexTransactionBuilder {
   private operations: (() => void)[] = [];
   private memo?: MemoSpec;
   private timeoutSeconds = 180;
+  private timeBounds: { minTime: string; maxTime: string } | null = null;
   private builtXdr: string | null = null;
   private signedXdr: string | null = null;
 
@@ -141,6 +142,12 @@ export class WirexTransactionBuilder {
     return this;
   }
 
+  /** Set explicit time bounds (min and max UNIX timestamps). Overrides setTimeout. */
+  setTimeBounds(minTime: number | string, maxTime: number | string): this {
+    this.timeBounds = { minTime: String(minTime), maxTime: String(maxTime) };
+    return this;
+  }
+
   /** Estimate fees for the current operations. */
   async estimateFees(): Promise<FeeEstimate> {
     const server = new Horizon.Server(this.config.horizonUrl);
@@ -159,10 +166,19 @@ export class WirexTransactionBuilder {
     const account = await server.loadAccount(this.options.sourceAccount);
     const fee = this.options.fee ?? String(await server.fetchBaseFee());
 
-    this.builder = new StellarTransactionBuilder(account, {
+    const builderOpts: Record<string, unknown> = {
       fee,
       networkPassphrase: this.config.networkPassphrase,
-    });
+    };
+
+    if (this.timeBounds) {
+      builderOpts.timebounds = {
+        minTime: this.timeBounds.minTime,
+        maxTime: this.timeBounds.maxTime,
+      };
+    }
+
+    this.builder = new StellarTransactionBuilder(account, builderOpts as unknown as ConstructorParameters<typeof StellarTransactionBuilder>[1]);
 
     for (const addOp of this.operations) {
       addOp();
@@ -172,7 +188,9 @@ export class WirexTransactionBuilder {
       this.builder.addMemo(this.resolveMemo(this.memo));
     }
 
-    this.builder.setTimeout(this.timeoutSeconds);
+    if (!this.timeBounds) {
+      this.builder.setTimeout(this.timeoutSeconds);
+    }
     const tx = this.builder.build();
     this.builtXdr = tx.toXDR();
     return this;
