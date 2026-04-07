@@ -10,7 +10,11 @@
       "Bash(pnpm run:*)",
       "Bash(grep -E \"\\\\.ts$|\\\\.json$|\\\\.rc|\\\\.nvmrc|\\\\.editorconfig\")",
       "Bash(ls -la .gitignore .editorconfig .nvmrc package.json tsconfig.json rollup.config.ts jest.config.js .prettierrc .eslintrc*)",
-      "Bash(npx jest:*)"
+      "Bash(npx jest:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm docs:*)",
+      "Bash(npx typedoc:*)",
+      "Bash(echo \"exists: $?\")"
     ]
   }
 }
