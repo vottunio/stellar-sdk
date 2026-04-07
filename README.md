@@ -32,17 +32,31 @@ yarn add @wirex/stellar-sdk
 ```typescript
 import { WirexSDK } from '@wirex/stellar-sdk';
 
-// Initialize SDK for testnet
+// 1. Initialize the SDK
 const sdk = new WirexSDK({ network: 'testnet' });
 
-// Access resolved config
-console.log(sdk.config.horizonUrl);
-// → "https://horizon-testnet.stellar.org"
+// 2. Create a wallet
+const wallet = sdk.wallet.create();
+console.log('Public key:', wallet.publicKey);
 
-// Hot-switch to mainnet
-sdk.setNetwork('mainnet');
-console.log(sdk.config.networkPassphrase);
-// → "Public Global Stellar Network ; September 2015"
+// 3. Send a payment (after funding the account via Friendbot)
+const result = await sdk
+  .transaction({ sourceAccount: wallet.publicKey })
+  .addPayment({
+    destination: 'GDEST...INATION',
+    asset: { code: 'XLM' },
+    amount: '10',
+  })
+  .addMemo({ type: 'text', value: 'Hello Stellar!' })
+  .build()
+  .then((tx) => tx.sign(wallet))
+  .then((tx) => tx.submit());
+
+console.log('Transaction hash:', result.hash);
+
+// 4. Track confirmation
+const confirmation = await sdk.trackTransaction(result.hash);
+console.log('Status:', confirmation.status); // 'confirmed'
 ```
 
 ### Custom Configuration
@@ -56,7 +70,83 @@ const sdk = new WirexSDK({
   timeout: { horizon: 60_000, api: 30_000, websocket: 15_000 },
   retry: { maxAttempts: 5, backoffMultiplier: 2 },
 });
+
+// Hot-switch networks at runtime
+sdk.setNetwork('mainnet');
 ```
+
+### Wallet Management
+
+```typescript
+// Create a new random wallet
+const wallet = sdk.wallet.create();
+
+// Import from secret key
+const imported = sdk.wallet.importFromSecret('SXXX...');
+
+// Import from mnemonic (BIP44 m/44'/148'/index')
+const fromMnemonic = sdk.wallet.importFromMnemonic('word1 word2 ... word12', 0);
+
+// HD wallet — derive multiple accounts from one mnemonic
+const hd = sdk.wallet.createHD();
+const account0 = hd.deriveAccount(0);
+const account1 = hd.deriveAccount(1);
+
+// Export encrypted backup
+const encrypted = wallet.exportEncrypted('my-password');
+
+// Connect external wallet (browser extension)
+const freighter = sdk.wallet.connectExternal('freighter');
+await freighter.connect();
+```
+
+### Transaction Builder
+
+The fluent API supports all common Stellar operations:
+
+```typescript
+// Create a new account
+await sdk.transaction({ sourceAccount: wallet.publicKey })
+  .addCreateAccount({ destination: 'G...', startingBalance: '5' })
+  .build().then((tx) => tx.sign(wallet)).then((tx) => tx.submit());
+
+// Add USDC trustline
+await sdk.transaction({ sourceAccount: wallet.publicKey })
+  .changeTrust({
+    asset: { code: 'USDC', issuer: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' },
+  })
+  .build().then((tx) => tx.sign(wallet)).then((tx) => tx.submit());
+
+// Store data on-chain
+await sdk.transaction({ sourceAccount: wallet.publicKey })
+  .addManageData({ name: 'app-version', value: '1.0.0' })
+  .build().then((tx) => tx.sign(wallet)).then((tx) => tx.submit());
+
+// Path payment (cross-asset)
+await sdk.transaction({ sourceAccount: wallet.publicKey })
+  .addPathPayment({
+    sendAsset: { code: 'XLM' }, sendAmount: '50',
+    destination: 'G...', destAsset: { code: 'USDC', issuer: '...' }, destMin: '10',
+  })
+  .build().then((tx) => tx.sign(wallet)).then((tx) => tx.submit());
+
+// Fee estimation
+const fees = await sdk.estimateFees(2);
+console.log(fees); // { baseFee: '100', estimatedFee: '200', operationCount: 2 }
+```
+
+### Supported Operations
+
+| Method | Description |
+|--------|-------------|
+| `addPayment()` | Send XLM or any Stellar asset |
+| `addCreateAccount()` | Create and fund a new Stellar account |
+| `changeTrust()` | Add/modify/remove a trustline |
+| `addManageData()` | Set or delete account data entries |
+| `addPathPayment()` | Cross-asset payments via path payment strict send |
+| `addMemo()` | Attach memo (text, id, hash, return, none) |
+| `setTimeout()` | Set transaction timeout in seconds |
+| `setTimeBounds()` | Set explicit min/max UNIX timestamp bounds |
 
 ## Architecture
 
@@ -150,7 +240,8 @@ pnpm test:watch        # Watch mode
 
 # Building
 pnpm build             # ESM + CJS + UMD + type declarations
-pnpm clean             # Remove dist/ and coverage/
+pnpm docs              # Generate API docs (TypeDoc)
+pnpm clean             # Remove dist/, coverage/, docs/api/
 ```
 
 ## Error Handling

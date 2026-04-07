@@ -130,6 +130,78 @@ describe('KeypairWallet', () => {
     });
   });
 
+  describe('getBalances', () => {
+    it('should return balances for a funded account', async () => {
+      const wallet = KeypairWallet.create(horizonUrl);
+      const originalFetch = global.fetch;
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          balances: [
+            { asset_type: 'native', balance: '100.0000000' },
+            { asset_type: 'credit_alphanum4', asset_code: 'USDC', asset_issuer: 'GA5ZSE...', balance: '50.0000000' },
+          ],
+        }),
+      }) as jest.Mock;
+
+      try {
+        const balances = await wallet.getBalances();
+        expect(balances).toHaveLength(2);
+        expect(balances[0]).toEqual({
+          asset: 'native',
+          code: 'XLM',
+          issuer: undefined,
+          balance: '100.0000000',
+        });
+        expect(balances[1]).toEqual({
+          asset: 'USDC:GA5ZSE...',
+          code: 'USDC',
+          issuer: 'GA5ZSE...',
+          balance: '50.0000000',
+        });
+      } finally {
+        global.fetch = originalFetch;
+      }
+    });
+
+    it('should throw WalletError for 404 (account not found)', async () => {
+      const wallet = KeypairWallet.create(horizonUrl);
+      const originalFetch = global.fetch;
+      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 404 }) as jest.Mock;
+
+      try {
+        await expect(wallet.getBalances()).rejects.toThrow(WalletError);
+        await expect(wallet.getBalances()).rejects.toThrow(/not found/i);
+      } finally {
+        global.fetch = originalFetch;
+      }
+    });
+
+    it('should throw WalletError for non-404 HTTP errors', async () => {
+      const wallet = KeypairWallet.create(horizonUrl);
+      const originalFetch = global.fetch;
+      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 500 }) as jest.Mock;
+
+      try {
+        await expect(wallet.getBalances()).rejects.toThrow(WalletError);
+      } finally {
+        global.fetch = originalFetch;
+      }
+    });
+
+    it('should throw WalletError on network error', async () => {
+      const wallet = KeypairWallet.create(horizonUrl);
+      const originalFetch = global.fetch;
+      global.fetch = jest.fn().mockRejectedValue(new Error('network down')) as jest.Mock;
+
+      try {
+        await expect(wallet.getBalances()).rejects.toThrow(WalletError);
+      } finally {
+        global.fetch = originalFetch;
+      }
+    });
+  });
+
   describe('addSigner (Task 1.2.9)', () => {
     it('should build a signed setOptions transaction XDR', async () => {
       const wallet = KeypairWallet.create(horizonUrl);
