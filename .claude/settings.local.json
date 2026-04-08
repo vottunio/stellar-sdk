@@ -14,7 +14,12 @@
       "Bash(pnpm add:*)",
       "Bash(pnpm docs:*)",
       "Bash(npx typedoc:*)",
-      "Bash(echo \"exists: $?\")"
+      "Bash(echo \"exists: $?\")",
+      "Bash(npm list:*)",
+      "Bash(pnpm install:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(npx tsx:*)",
+      "Bash(tee /tmp/testnet-demo-output.txt)"
     ]
   }
 }
