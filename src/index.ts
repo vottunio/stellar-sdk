@@ -1,4 +1,5 @@
 import { ConfigManager } from './config/ConfigManager';
+import { SorobanService } from './stellar/SorobanService';
 import { WirexTransactionBuilder } from './transaction/TransactionBuilder';
 import { TransactionTracker } from './transaction/TransactionTracker';
 import { FeeEstimator } from './transaction/FeeEstimator';
@@ -21,6 +22,9 @@ export { WalletManager, KeypairWallet, HDWallet, ExternalWallet } from './wallet
 // Re-export transaction
 export { WirexTransactionBuilder, TransactionSubmitter, FeeEstimator, TransactionTracker } from './transaction';
 
+// Re-export stellar
+export { SorobanService } from './stellar';
+
 /**
  * Main SDK class — entry point for all Wirex Stellar SDK functionality.
  *
@@ -39,6 +43,7 @@ export { WirexTransactionBuilder, TransactionSubmitter, FeeEstimator, Transactio
 export class WirexSDK {
   private readonly configManager: ConfigManager;
   private walletManager: WalletManager | null = null;
+  private sorobanService: SorobanService | null = null;
 
   constructor(config: WirexSDKConfig) {
     this.configManager = new ConfigManager(config);
@@ -53,6 +58,9 @@ export class WirexSDK {
   setNetwork(network: NetworkType): void {
     this.configManager.setNetwork(network);
     this.walletManager = null; // reset so it picks up new config
+    if (this.sorobanService) {
+      this.sorobanService.reconnect(this.configManager.getConfig());
+    }
   }
 
   /** Wallet management — create, import, connect wallets. */
@@ -80,9 +88,17 @@ export class WirexSDK {
     return tracker.waitForConfirmation(hash);
   }
 
+  /** Soroban smart contract interaction service. */
+  get soroban(): SorobanService {
+    if (!this.sorobanService) {
+      this.sorobanService = new SorobanService(this.configManager.getConfig());
+    }
+    return this.sorobanService;
+  }
+
   // --- Module accessors (scaffolded, implemented in later tranches) ---
 
-  // Phase 2.1-2.2: Stellar Blockchain Interaction
+  // Phase 2.2: Stellar Blockchain Extended (AccountService, AssetService, PaymentService)
   // get stellar(): StellarClient { ... }
 
   // Phase 2.3: API Client

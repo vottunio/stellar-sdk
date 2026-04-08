@@ -91,3 +91,4 @@ pids/
 .turbo/
 .vercel/
 .netlify/
+.claude/*

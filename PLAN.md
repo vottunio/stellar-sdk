@@ -237,22 +237,22 @@ interface WirexSDKConfig {
 
 ## Tranche 2 — Testnet (Weeks 6-11) — $43,200
 
-### Phase 2.1: Smart Contract Interaction Module — Soroban (Weeks 6-7)
+### Phase 2.1: Smart Contract Interaction Module — Soroban (Weeks 6-7) ✅ COMPLETED
 
-**Files:** `src/stellar/SorobanService.ts`
+**Files:** `src/stellar/SorobanService.ts`, `src/types/stellar.types.ts`
 
-| # | Task | API | Stellar SDK Usage |
-|---|------|-----|-------------------|
-| 2.1.1 | Soroban client init | Internal — connects to Soroban RPC | `new SorobanRpc.Server(rpcUrl)` |
-| 2.1.2 | Invoke contract | `sdk.stellar.invokeContract({ contractId, method, args })` | `contract.call(method, ...args)` via `SorobanRpc` |
-| 2.1.3 | Read contract (query) | `sdk.stellar.readContract({ contractId, method, args })` | `server.simulateTransaction()` — read-only, no submit |
-| 2.1.4 | ScVal encoding | `sdk.stellar.nativeToScVal(value, type)` | `nativeToScVal()` — convert JS values to Soroban types |
-| 2.1.5 | ScVal decoding | `sdk.stellar.scValToNative(scVal)` | `scValToNative()` — convert Soroban results to JS |
-| 2.1.6 | Contract instance | `sdk.stellar.getContract(contractId): Contract` | `new Contract(contractId)` |
-| 2.1.7 | Prepare transaction | Internal — simulate before submit | `server.prepareTransaction(tx)` — adds resource footprint |
-| 2.1.8 | Error normalization | Soroban errors → `StellarError` | Map simulation failures, invoke errors to typed codes |
-| 2.1.9 | Unit tests | - | Encoding/decoding, error mapping |
-| 2.1.10 | Integration tests | - | Invoke token contract on testnet |
+| # | Task | API | Stellar SDK Usage | Status |
+|---|------|-----|-------------------|--------|
+| 2.1.1 | Soroban client init | Internal — connects to Soroban RPC | `new SorobanRpc.Server(rpcUrl)` | ✅ Done |
+| 2.1.2 | Invoke contract | `sdk.soroban.invokeContract({ contractId, method, args }, wallet)` | `contract.call(method, ...args)` via `SorobanRpc` | ✅ Done |
+| 2.1.3 | Read contract (query) | `sdk.soroban.readContract({ contractId, method, args })` | `server.simulateTransaction()` — read-only, no submit | ✅ Done |
+| 2.1.4 | ScVal encoding | `sdk.soroban.nativeToScVal(value, type)` | `nativeToScVal()` — convert JS values to Soroban types | ✅ Done |
+| 2.1.5 | ScVal decoding | `sdk.soroban.scValToNative(scVal)` | `scValToNative()` — convert Soroban results to JS | ✅ Done |
+| 2.1.6 | Contract instance | `sdk.soroban.getContract(contractId): Contract` | `new Contract(contractId)` | ✅ Done |
+| 2.1.7 | Prepare transaction | Internal — simulate before submit | `server.prepareTransaction(tx)` — adds resource footprint | ✅ Done |
+| 2.1.8 | Error normalization | Soroban errors → `StellarError` | Map simulation failures, invoke errors to typed `SorobanErrorCode` | ✅ Done |
+| 2.1.9 | Unit tests | - | 31 tests: encoding/decoding, error mapping, invoke, read, prepare, validation | ✅ Done |
+| 2.1.10 | Integration tests | - | Invoke token contract on testnet | ⏳ Pending testnet contract |
 
 ### Phase 2.2: Stellar Blockchain Interaction — Extended (Week 7-8)
 
