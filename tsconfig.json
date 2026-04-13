@@ -13,19 +13,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "dist",
-    "rootDir": "src",
-    "baseUrl": ".",
-    "paths": {
-      "@wirex/types/*": ["src/types/*"],
-      "@wirex/errors/*": ["src/errors/*"],
-      "@wirex/config/*": ["src/config/*"],
-      "@wirex/wallet/*": ["src/wallet/*"],
-      "@wirex/stellar/*": ["src/stellar/*"],
-      "@wirex/transaction/*": ["src/transaction/*"],
-      "@wirex/api/*": ["src/api/*"],
-      "@wirex/websocket/*": ["src/websocket/*"],
-      "@wirex/reference/*": ["src/reference/*"]
-    }
+    "rootDir": "src"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "tests", "examples"]

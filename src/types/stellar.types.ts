@@ -66,6 +66,136 @@ export type StreamCallback<T> = (event: T) => void;
  */
 export type StreamCloseFn = () => void;
 
+// ─── Stellar Operations Types (Phase 2.2) ────────────────────────────────────
+
+/**
+ * Parameters for a high-level send payment operation.
+ */
+export interface StellarSendPaymentParams {
+  /** Source account public key. */
+  sourceAccount: string;
+  /** Destination account public key. */
+  destination: string;
+  /** Asset to send. */
+  asset: { code: string; issuer?: string };
+  /** Amount to send (as string, e.g. '100.50'). */
+  amount: string;
+  /** Optional memo to attach. */
+  memo?: { type: 'text' | 'id' | 'hash' | 'return'; value: string };
+  /** Optional fee in stroops. */
+  fee?: string;
+}
+
+/**
+ * Parameters for creating a new Stellar account on-chain.
+ */
+export interface StellarCreateAccountParams {
+  /** Source account public key that funds the new account. */
+  sourceAccount: string;
+  /** New account public key. */
+  destination: string;
+  /** Starting balance in XLM (as string). */
+  startingBalance: string;
+}
+
+/**
+ * Parameters for a change trust operation.
+ */
+export interface StellarChangeTrustParams {
+  /** Source account public key. */
+  sourceAccount: string;
+  /** Asset to trust. */
+  asset: { code: string; issuer: string };
+  /** Trust limit (omit or '0' to remove trustline). */
+  limit?: string;
+}
+
+/**
+ * Parameters for a path payment strict send operation.
+ */
+export interface StellarPathPaymentStrictSendParams {
+  sourceAccount: string;
+  sendAsset: { code: string; issuer?: string };
+  sendAmount: string;
+  destination: string;
+  destAsset: { code: string; issuer?: string };
+  destMin: string;
+  path?: { code: string; issuer?: string }[];
+}
+
+/**
+ * Parameters for a path payment strict receive operation.
+ */
+export interface StellarPathPaymentStrictReceiveParams {
+  sourceAccount: string;
+  sendAsset: { code: string; issuer?: string };
+  sendMax: string;
+  destination: string;
+  destAsset: { code: string; issuer?: string };
+  destAmount: string;
+  path?: { code: string; issuer?: string }[];
+}
+
+/**
+ * Claimant predicate for claimable balances.
+ */
+export interface ClaimantSpec {
+  destination: string;
+  predicate?: 'unconditional' | { before: number } | { after: number };
+}
+
+/**
+ * Parameters for creating a claimable balance.
+ */
+export interface CreateClaimableBalanceParams {
+  sourceAccount: string;
+  asset: { code: string; issuer?: string };
+  amount: string;
+  claimants: ClaimantSpec[];
+}
+
+/**
+ * Parameters for claiming a claimable balance.
+ */
+export interface ClaimClaimableBalanceParams {
+  sourceAccount: string;
+  balanceId: string;
+}
+
+/**
+ * Parameters for sponsored reserves operations.
+ */
+export interface SponsoredOperationParams {
+  sourceAccount: string;
+  sponsoredAccount: string;
+}
+
+/**
+ * Parameters for manage data operation.
+ */
+export interface ManageDataOperationParams {
+  sourceAccount: string;
+  name: string;
+  value?: string | Buffer | null;
+}
+
+/**
+ * Error codes for Stellar operation failures.
+ */
+export enum StellarOperationErrorCode {
+  ACCOUNT_NOT_FOUND = 'STELLAR_ACCOUNT_NOT_FOUND',
+  ACCOUNT_ALREADY_EXISTS = 'STELLAR_ACCOUNT_ALREADY_EXISTS',
+  FUND_FAILED = 'STELLAR_FUND_FAILED',
+  PAYMENT_FAILED = 'STELLAR_PAYMENT_FAILED',
+  TRUSTLINE_FAILED = 'STELLAR_TRUSTLINE_FAILED',
+  PATH_PAYMENT_FAILED = 'STELLAR_PATH_PAYMENT_FAILED',
+  CLAIMABLE_BALANCE_FAILED = 'STELLAR_CLAIMABLE_BALANCE_FAILED',
+  SPONSORSHIP_FAILED = 'STELLAR_SPONSORSHIP_FAILED',
+  MANAGE_DATA_FAILED = 'STELLAR_MANAGE_DATA_FAILED',
+  INVALID_ADDRESS = 'STELLAR_INVALID_ADDRESS',
+  BUILD_FAILED = 'STELLAR_BUILD_FAILED',
+}
+
 // ─── Soroban Types ───────────────────────────────────────────────────────────
 
 /**
@@ -98,6 +228,8 @@ export interface InvokeContractParams {
   args?: xdr.ScVal[];
   /** The source account public key that will sign the transaction. */
   sourceAccount: string;
+  /** Base fee in stroops (default: '100'). Soroban may require higher fees on mainnet. */
+  fee?: string;
 }
 
 /**
