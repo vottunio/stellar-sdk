@@ -19,7 +19,10 @@
       "Bash(pnpm install:*)",
       "Bash(npx ts-node:*)",
       "Bash(npx tsx:*)",
-      "Bash(tee /tmp/testnet-demo-output.txt)"
+      "Bash(tee /tmp/testnet-demo-output.txt)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)"
     ]
   }
 }
