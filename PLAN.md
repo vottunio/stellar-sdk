@@ -254,28 +254,28 @@ interface WirexSDKConfig {
 | 2.1.9 | Unit tests | - | 31 tests: encoding/decoding, error mapping, invoke, read, prepare, validation | ✅ Done |
 | 2.1.10 | Integration tests | - | Invoke token contract on testnet | ⏳ Pending testnet contract |
 
-### Phase 2.2: Stellar Blockchain Interaction — Extended (Week 7-8)
+### Phase 2.2: Stellar Blockchain Interaction — Extended (Week 7-8) ✅ COMPLETED
 
 **Goal:** High-level operation helpers that build, sign, and submit transactions. Query methods (getBalances, getAccount) are in Module 4 (API Client); this module uses them internally.
 
-**Files:** `src/stellar/AccountService.ts`, `AssetService.ts`, `PaymentService.ts`
+**Files:** `src/stellar/AccountService.ts`, `AssetService.ts`, `PaymentService.ts`, `StellarClient.ts`, `TransactionHelper.ts`
 
-| # | Task | API | Stellar SDK Usage |
-|---|------|-----|-------------------|
-| 2.2.1 | Account exists check | `sdk.stellar.accountExists(address): boolean` | Uses `sdk.api.horizon.getAccount()` — catch 404 |
-| 2.2.2 | Fund test account | `sdk.stellar.fundTestAccount(address)` | `fetch(https://friendbot.stellar.org?addr=...)` |
-| 2.2.3 | Send payment | `sdk.stellar.sendPayment({ from, to, asset, amount })` | Builder shortcut: `Operation.payment()` + sign + submit |
-| 2.2.4 | Create account | `sdk.stellar.createAccount({ source, destination, startingBalance })` | `Operation.createAccount()` |
-| 2.2.5 | Change trust | `sdk.stellar.changeTrust({ asset, limit? })` | `Operation.changeTrust()` |
-| 2.2.6 | Path payment strict send | `sdk.stellar.pathPaymentStrictSend({...})` | `Operation.pathPaymentStrictSend()` |
-| 2.2.7 | Path payment strict receive | `sdk.stellar.pathPaymentStrictReceive({...})` | `Operation.pathPaymentStrictReceive()` |
-| 2.2.8 | Claimable balance create | `sdk.stellar.createClaimableBalance({...})` | `Operation.createClaimableBalance()` |
-| 2.2.9 | Claimable balance claim | `sdk.stellar.claimClaimableBalance({ balanceId })` | `Operation.claimClaimableBalance()` |
-| 2.2.10 | Sponsored reserves | `sdk.stellar.beginSponsoring()`, `endSponsoring()` | `Operation.beginSponsoringFutureReserves()` / `end...()` |
-| 2.2.11 | Manage data | `sdk.stellar.manageData({ name, value })` | `Operation.manageData()` |
-| 2.2.12 | Asset class | `sdk.stellar.Asset.native()`, `new Asset(code, issuer)` | Wraps `StellarSdk.Asset` |
-| 2.2.13 | Unit tests | - | All operations, edge cases |
-| 2.2.14 | Integration tests | - | Payments, trustlines on testnet |
+| # | Task | API | Stellar SDK Usage | Status |
+|---|------|-----|-------------------|--------|
+| 2.2.1 | Account exists check | `sdk.stellar.accountExists(address): boolean` | `server.loadAccount()` — catch 404 | ✅ Done |
+| 2.2.2 | Fund test account | `sdk.stellar.fundTestAccount(address)` | `fetch(https://friendbot.stellar.org?addr=...)` | ✅ Done |
+| 2.2.3 | Send payment | `sdk.stellar.sendPayment({ sourceAccount, destination, asset, amount })` | Builder shortcut: `Operation.payment()` + sign + submit | ✅ Done |
+| 2.2.4 | Create account | `sdk.stellar.createAccount({ sourceAccount, destination, startingBalance })` | `Operation.createAccount()` | ✅ Done |
+| 2.2.5 | Change trust | `sdk.stellar.changeTrust({ sourceAccount, asset, limit? })` | `Operation.changeTrust()` | ✅ Done |
+| 2.2.6 | Path payment strict send | `sdk.stellar.pathPaymentStrictSend({...})` | `Operation.pathPaymentStrictSend()` | ✅ Done |
+| 2.2.7 | Path payment strict receive | `sdk.stellar.pathPaymentStrictReceive({...})` | `Operation.pathPaymentStrictReceive()` | ✅ Done |
+| 2.2.8 | Claimable balance create | `sdk.stellar.createClaimableBalance({...})` | `Operation.createClaimableBalance()` |  |
+| 2.2.9 | Claimable balance claim | `sdk.stellar.claimClaimableBalance({ balanceId })` | `Operation.claimClaimableBalance()` |  |
+| 2.2.10 | Sponsored reserves | `sdk.stellar.sponsoredOperation(params, ops, wallet)` | `Operation.beginSponsoringFutureReserves()` / `end...()` |  |
+| 2.2.11 | Manage data | `sdk.stellar.manageData({ sourceAccount, name, value })` | `Operation.manageData()` |  |
+| 2.2.12 | Asset class | `sdk.stellar.Asset.native()`, `.custom(code, issuer)` | Wraps `StellarSdk.Asset` |  |
+| 2.2.13 | Unit tests | - | 45 tests: all operations, edge cases, validation |  |
+| 2.2.14 | Integration tests | - | Payments, trustlines on testnet | ⏳ Phase 2.5 |
 
 ### Phase 2.3: API Client Module (Weeks 8-9)
 
