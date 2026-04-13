@@ -1,4 +1,5 @@
 import { ConfigManager } from './config/ConfigManager';
+import { StellarClient } from './stellar/StellarClient';
 import { SorobanService } from './stellar/SorobanService';
 import { WirexTransactionBuilder } from './transaction/TransactionBuilder';
 import { TransactionTracker } from './transaction/TransactionTracker';
@@ -23,7 +24,7 @@ export { WalletManager, KeypairWallet, HDWallet, ExternalWallet } from './wallet
 export { WirexTransactionBuilder, TransactionSubmitter, FeeEstimator, TransactionTracker } from './transaction';
 
 // Re-export stellar
-export { SorobanService } from './stellar';
+export { StellarClient, AccountService, AssetService, PaymentService, SorobanService, TransactionHelper } from './stellar';
 
 /**
  * Main SDK class — entry point for all Wirex Stellar SDK functionality.
@@ -44,6 +45,7 @@ export class WirexSDK {
   private readonly configManager: ConfigManager;
   private walletManager: WalletManager | null = null;
   private sorobanService: SorobanService | null = null;
+  private stellarClient: StellarClient | null = null;
 
   constructor(config: WirexSDKConfig) {
     this.configManager = new ConfigManager(config);
@@ -96,10 +98,13 @@ export class WirexSDK {
     return this.sorobanService;
   }
 
-  // --- Module accessors (scaffolded, implemented in later phases) ---
-
-  // Phase 2.2: Stellar Blockchain Extended (AccountService, AssetService, PaymentService)
-  // get stellar(): StellarClient { ... }
+  /** Stellar blockchain interaction — accounts, payments, assets, Soroban. */
+  get stellar(): StellarClient {
+    if (!this.stellarClient) {
+      this.stellarClient = new StellarClient(this.configManager.getConfig());
+    }
+    return this.stellarClient;
+  }
 
   // Phase 2.3: API Client
   // get api(): ApiClient { ... }

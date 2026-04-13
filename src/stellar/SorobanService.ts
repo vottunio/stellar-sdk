@@ -5,8 +5,6 @@ import {
   nativeToScVal,
   scValToNative,
   xdr,
-  Networks,
-  Account,
   StrKey,
 } from '@stellar/stellar-sdk';
 
@@ -49,7 +47,7 @@ import { Wallet } from '../types/wallet.types';
  * ```
  */
 export class SorobanService {
-  private readonly config: ResolvedConfig;
+  private config: ResolvedConfig;
   private readonly logger: Logger;
   private server: SorobanRpc.Server;
 
@@ -85,7 +83,7 @@ export class SorobanService {
   /** Reinitialize the server (e.g. after a network switch). */
   reconnect(config?: ResolvedConfig): void {
     if (config) {
-      (this as unknown as { config: ResolvedConfig }).config = config;
+      this.config = config;
     }
     this.server = this.createServer();
   }
@@ -126,14 +124,14 @@ export class SorobanService {
       const account = await this.server.getAccount(params.sourceAccount);
 
       const tx = new TransactionBuilder(account, {
-        fee: '100',
+        fee: params.fee ?? '100',
         networkPassphrase: this.config.networkPassphrase,
       })
         .addOperation(contract.call(params.method, ...(params.args ?? [])))
         .setTimeout(30)
         .build();
 
-      // Prepare (simulate + add resource footprint)
+      // Prepare (simulate + add resource footprint — may adjust fee upward)
       const preparedTx = await this.prepareTransaction(tx);
 
       // Sign
