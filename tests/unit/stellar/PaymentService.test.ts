@@ -7,7 +7,6 @@ import {
 import { ConfigManager } from '../../../src/config/ConfigManager';
 import { PaymentService } from '../../../src/stellar/PaymentService';
 import { StellarError } from '../../../src/errors/StellarError';
-import { StellarOperationErrorCode } from '../../../src/types/stellar.types';
 
 // ─── Mocks ───────────────────────────────────────────────────────────────────
 
