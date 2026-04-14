@@ -1,9 +1,6 @@
 import {
   Horizon,
-  Keypair,
   Operation,
-  TransactionBuilder,
-  Account,
   StrKey,
 } from '@stellar/stellar-sdk';
 

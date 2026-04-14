@@ -1,8 +1,8 @@
 import {
   Horizon,
-  Operation,
   TransactionBuilder,
   Memo,
+  Operation,
 } from '@stellar/stellar-sdk';
 
 import { StellarError } from '../errors/StellarError';

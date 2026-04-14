@@ -1,3 +1,4 @@
+import { HorizonClient } from './api/HorizonClient';
 import { ConfigManager } from './config/ConfigManager';
 import { StellarClient } from './stellar/StellarClient';
 import { SorobanService } from './stellar/SorobanService';
@@ -26,6 +27,9 @@ export { WirexTransactionBuilder, TransactionSubmitter, FeeEstimator, Transactio
 // Re-export stellar
 export { StellarClient, AccountService, AssetService, PaymentService, SorobanService, TransactionHelper } from './stellar';
 
+// Re-export api
+export { ApiClient, HorizonClient, ResponseMapper, ErrorMapper } from './api';
+
 /**
  * Main SDK class — entry point for all Wirex Stellar SDK functionality.
  *
@@ -46,6 +50,7 @@ export class WirexSDK {
   private walletManager: WalletManager | null = null;
   private sorobanService: SorobanService | null = null;
   private stellarClient: StellarClient | null = null;
+  private horizonClient: HorizonClient | null = null;
 
   constructor(config: WirexSDKConfig) {
     this.configManager = new ConfigManager(config);
@@ -59,7 +64,10 @@ export class WirexSDK {
   /** Hot-switch the active Stellar network. */
   setNetwork(network: NetworkType): void {
     this.configManager.setNetwork(network);
-    this.walletManager = null; // reset so it picks up new config
+    // Reset all service instances so they pick up the new config on next access
+    this.walletManager = null;
+    this.stellarClient = null;
+    this.horizonClient = null;
     if (this.sorobanService) {
       this.sorobanService.reconnect(this.configManager.getConfig());
     }
@@ -106,8 +114,15 @@ export class WirexSDK {
     return this.stellarClient;
   }
 
-  // Phase 2.3: API Client
-  // get api(): ApiClient { ... }
+  /** API clients for Horizon REST and Soroban RPC. */
+  get api(): { horizon: HorizonClient } {
+    if (!this.horizonClient) {
+      this.horizonClient = new HorizonClient(this.configManager.getConfig());
+    }
+    return {
+      horizon: this.horizonClient,
+    };
+  }
 
   // Phase 2.4: WebSocket & Streaming
   // get websocket(): WebSocketClient { ... }
