@@ -2,13 +2,11 @@ import {
   Horizon,
   Keypair,
   Account,
-  StrKey,
 } from '@stellar/stellar-sdk';
 
 import { ConfigManager } from '../../../src/config/ConfigManager';
 import { AccountService } from '../../../src/stellar/AccountService';
 import { StellarError } from '../../../src/errors/StellarError';
-import { StellarOperationErrorCode } from '../../../src/types/stellar.types';
 
 // ─── Mocks ───────────────────────────────────────────────────────────────────
 

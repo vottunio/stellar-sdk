@@ -1,5 +1,4 @@
 import {
-  Asset,
   Horizon,
   Keypair,
   Account,
@@ -8,7 +7,6 @@ import {
 import { ConfigManager } from '../../../src/config/ConfigManager';
 import { AssetService } from '../../../src/stellar/AssetService';
 import { StellarError } from '../../../src/errors/StellarError';
-import { StellarOperationErrorCode } from '../../../src/types/stellar.types';
 
 // ─── Mocks ───────────────────────────────────────────────────────────────────
 
