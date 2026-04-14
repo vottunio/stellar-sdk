@@ -269,28 +269,28 @@ interface WirexSDKConfig {
 | 2.2.5 | Change trust | `sdk.stellar.changeTrust({ sourceAccount, asset, limit? })` | `Operation.changeTrust()` | ✅ Done |
 | 2.2.6 | Path payment strict send | `sdk.stellar.pathPaymentStrictSend({...})` | `Operation.pathPaymentStrictSend()` | ✅ Done |
 | 2.2.7 | Path payment strict receive | `sdk.stellar.pathPaymentStrictReceive({...})` | `Operation.pathPaymentStrictReceive()` | ✅ Done |
-| 2.2.8 | Claimable balance create | `sdk.stellar.createClaimableBalance({...})` | `Operation.createClaimableBalance()` |  |
-| 2.2.9 | Claimable balance claim | `sdk.stellar.claimClaimableBalance({ balanceId })` | `Operation.claimClaimableBalance()` |  |
-| 2.2.10 | Sponsored reserves | `sdk.stellar.sponsoredOperation(params, ops, wallet)` | `Operation.beginSponsoringFutureReserves()` / `end...()` |  |
-| 2.2.11 | Manage data | `sdk.stellar.manageData({ sourceAccount, name, value })` | `Operation.manageData()` |  |
-| 2.2.12 | Asset class | `sdk.stellar.Asset.native()`, `.custom(code, issuer)` | Wraps `StellarSdk.Asset` |  |
-| 2.2.13 | Unit tests | - | 45 tests: all operations, edge cases, validation |  |
+| 2.2.8 | Claimable balance create | `sdk.stellar.createClaimableBalance({...})` | `Operation.createClaimableBalance()` | ✅ Done |
+| 2.2.9 | Claimable balance claim | `sdk.stellar.claimClaimableBalance({ balanceId })` | `Operation.claimClaimableBalance()` | ✅ Done |
+| 2.2.10 | Sponsored reserves | `sdk.stellar.sponsoredOperation(params, ops, wallet)` | `Operation.beginSponsoringFutureReserves()` / `end...()` | ✅ Done |
+| 2.2.11 | Manage data | `sdk.stellar.manageData({ sourceAccount, name, value })` | `Operation.manageData()` | ✅ Done |
+| 2.2.12 | Asset class | `sdk.stellar.Asset.native()`, `.custom(code, issuer)` | Wraps `StellarSdk.Asset` | ✅ Done |
+| 2.2.13 | Unit tests | - | 45 tests: all operations, edge cases, validation | ✅ Done |
 | 2.2.14 | Integration tests | - | Payments, trustlines on testnet | ⏳ Phase 2.5 |
 
-### Phase 2.3: API Client Module (Weeks 8-9)
+### Phase 2.3: API Client Module (Weeks 8-9) — In Progress
 
 **Goal:** Unified client for Stellar network APIs and external services, with standardized request/response and error handling models.
 
-**Files:** `src/api/`
+**Files:** `src/api/ApiClient.ts`, `HorizonClient.ts`, `ResponseMapper.ts`, `ErrorMapper.ts`
 
-| # | Task | API | Details |
-|---|------|-----|---------|
-| 2.3.1 | Base HTTP client | `ApiClient` | Axios instance with interceptors, base URL config, error mapping, retry logic |
-| 2.3.2 | Horizon REST wrapper — accounts | `sdk.api.horizon.getAccount(address)` | `GET {horizonUrl}/accounts/{address}` — balances, signers, data, thresholds, sequence |
-| 2.3.3 | Horizon REST wrapper — transactions | `sdk.api.horizon.getTransactions({ account?, cursor?, limit?, order? })` | `GET {horizonUrl}/transactions` or `/accounts/{id}/transactions` — paginated with cursor |
-| 2.3.4 | Horizon REST wrapper — single tx | `sdk.api.horizon.getTransaction(hash)` | `GET {horizonUrl}/transactions/{hash}` — full tx details + operations |
-| 2.3.5 | Horizon REST wrapper — operations | `sdk.api.horizon.getOperations({ account?, tx?, cursor?, limit? })` | `GET {horizonUrl}/operations` — filter by account or transaction |
-| 2.3.6 | Horizon REST wrapper — payments | `sdk.api.horizon.getPayments({ account?, cursor?, limit? })` | `GET {horizonUrl}/payments` — payment operations only |
+| # | Task | API | Details | Status |
+|---|------|-----|---------|--------|
+| 2.3.1 | Base HTTP client | `ApiClient` | Axios instance with interceptors, base URL config, error mapping, retry logic | ✅ Done |
+| 2.3.2 | Horizon REST wrapper — accounts | `sdk.api.horizon.getAccount(address)` | `GET {horizonUrl}/accounts/{address}` — balances, signers, data, thresholds, sequence | ✅ Done |
+| 2.3.3 | Horizon REST wrapper — transactions | `sdk.api.horizon.getTransactions({ account?, cursor?, limit?, order? })` | `GET {horizonUrl}/transactions` or `/accounts/{id}/transactions` — paginated with cursor | ✅ Done |
+| 2.3.4 | Horizon REST wrapper — single tx | `sdk.api.horizon.getTransaction(hash)` | `GET {horizonUrl}/transactions/{hash}` — full tx details + operations | ✅ Done |
+| 2.3.5 | Horizon REST wrapper — operations | `sdk.api.horizon.getOperations({ account?, tx?, cursor?, limit? })` | `GET {horizonUrl}/operations` — filter by account or transaction | ✅ Done |
+| 2.3.6 | Horizon REST wrapper — payments | `sdk.api.horizon.getPayments({ account?, cursor?, limit? })` | `GET {horizonUrl}/payments` — payment operations only | ✅ Done |
 | 2.3.7 | Horizon REST wrapper — effects | `sdk.api.horizon.getEffects({ account?, cursor?, limit? })` | `GET {horizonUrl}/effects` — account effects |
 | 2.3.8 | Horizon REST wrapper — ledgers | `sdk.api.horizon.getLedger(sequence?)` | `GET {horizonUrl}/ledgers/{sequence}` — ledger info |
 | 2.3.9 | Horizon REST wrapper — assets | `sdk.api.horizon.getAssets({ code?, issuer? })` | `GET {horizonUrl}/assets` — asset discovery |
