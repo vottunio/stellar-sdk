@@ -1,4 +1,5 @@
 import { HorizonClient } from './api/HorizonClient';
+import { SorobanRpcClient } from './api/SorobanRpcClient';
 import { ConfigManager } from './config/ConfigManager';
 import { StellarClient } from './stellar/StellarClient';
 import { SorobanService } from './stellar/SorobanService';
@@ -28,7 +29,7 @@ export { WirexTransactionBuilder, TransactionSubmitter, FeeEstimator, Transactio
 export { StellarClient, AccountService, AssetService, PaymentService, SorobanService, TransactionHelper } from './stellar';
 
 // Re-export api
-export { ApiClient, HorizonClient, ResponseMapper, ErrorMapper } from './api';
+export { ApiClient, HorizonClient, SorobanRpcClient, ResponseMapper, ErrorMapper } from './api';
 
 /**
  * Main SDK class — entry point for all Wirex Stellar SDK functionality.
@@ -51,6 +52,7 @@ export class WirexSDK {
   private sorobanService: SorobanService | null = null;
   private stellarClient: StellarClient | null = null;
   private horizonClient: HorizonClient | null = null;
+  private sorobanRpcClient: SorobanRpcClient | null = null;
 
   constructor(config: WirexSDKConfig) {
     this.configManager = new ConfigManager(config);
@@ -68,6 +70,7 @@ export class WirexSDK {
     this.walletManager = null;
     this.stellarClient = null;
     this.horizonClient = null;
+    this.sorobanRpcClient = null;
     if (this.sorobanService) {
       this.sorobanService.reconnect(this.configManager.getConfig());
     }
@@ -115,12 +118,16 @@ export class WirexSDK {
   }
 
   /** API clients for Horizon REST and Soroban RPC. */
-  get api(): { horizon: HorizonClient } {
+  get api(): { horizon: HorizonClient; soroban: SorobanRpcClient } {
     if (!this.horizonClient) {
       this.horizonClient = new HorizonClient(this.configManager.getConfig());
     }
+    if (!this.sorobanRpcClient) {
+      this.sorobanRpcClient = new SorobanRpcClient(this.configManager.getConfig());
+    }
     return {
       horizon: this.horizonClient,
+      soroban: this.sorobanRpcClient,
     };
   }
 
