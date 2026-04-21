@@ -277,11 +277,11 @@ interface WirexSDKConfig {
 | 2.2.13 | Unit tests | - | 45 tests: all operations, edge cases, validation | ✅ Done |
 | 2.2.14 | Integration tests | - | Payments, trustlines on testnet | ⏳ Phase 2.5 |
 
-### Phase 2.3: API Client Module (Weeks 8-9) — In Progress
+### Phase 2.3: API Client Module (Weeks 8-9) ✅ COMPLETED
 
 **Goal:** Unified client for Stellar network APIs and external services, with standardized request/response and error handling models.
 
-**Files:** `src/api/ApiClient.ts`, `HorizonClient.ts`, `ResponseMapper.ts`, `ErrorMapper.ts`
+**Files:** `src/api/ApiClient.ts`, `HorizonClient.ts`, `SorobanRpcClient.ts`, `ExternalClientFactory.ts`, `ResponseMapper.ts`, `ErrorMapper.ts`
 
 | # | Task | API | Details | Status |
 |---|------|-----|---------|--------|
@@ -291,21 +291,21 @@ interface WirexSDKConfig {
 | 2.3.4 | Horizon REST wrapper — single tx | `sdk.api.horizon.getTransaction(hash)` | `GET {horizonUrl}/transactions/{hash}` — full tx details + operations | ✅ Done |
 | 2.3.5 | Horizon REST wrapper — operations | `sdk.api.horizon.getOperations({ account?, tx?, cursor?, limit? })` | `GET {horizonUrl}/operations` — filter by account or transaction | ✅ Done |
 | 2.3.6 | Horizon REST wrapper — payments | `sdk.api.horizon.getPayments({ account?, cursor?, limit? })` | `GET {horizonUrl}/payments` — payment operations only | ✅ Done |
-| 2.3.7 | Horizon REST wrapper — effects | `sdk.api.horizon.getEffects({ account?, cursor?, limit? })` | `GET {horizonUrl}/effects` — account effects |
-| 2.3.8 | Horizon REST wrapper — ledgers | `sdk.api.horizon.getLedger(sequence?)` | `GET {horizonUrl}/ledgers/{sequence}` — ledger info |
-| 2.3.9 | Horizon REST wrapper — assets | `sdk.api.horizon.getAssets({ code?, issuer? })` | `GET {horizonUrl}/assets` — asset discovery |
-| 2.3.10 | Horizon REST wrapper — order book | `sdk.api.horizon.getOrderBook({ selling, buying })` | `GET {horizonUrl}/order_book` — current offers |
-| 2.3.11 | Horizon REST wrapper — trade aggregations | `sdk.api.horizon.getTradeAggregations({ base, counter, resolution })` | `GET {horizonUrl}/trade_aggregations` — OHLC data |
-| 2.3.12 | Horizon REST wrapper — fee stats | `sdk.api.horizon.getFeeStats()` | `GET {horizonUrl}/fee_stats` — network fee percentiles |
-| 2.3.13 | Soroban RPC wrapper — getHealth | `sdk.api.soroban.getHealth()` | `POST {sorobanRpcUrl}` method `getHealth` — node status |
-| 2.3.14 | Soroban RPC wrapper — getTransaction | `sdk.api.soroban.getTransaction(hash)` | `POST {sorobanRpcUrl}` method `getTransaction` — tx status + result |
-| 2.3.15 | Soroban RPC wrapper — getEvents | `sdk.api.soroban.getEvents({ startLedger, filters })` | `POST {sorobanRpcUrl}` method `getEvents` — contract events |
-| 2.3.16 | Soroban RPC wrapper — getLedgerEntries | `sdk.api.soroban.getLedgerEntries(keys)` | `POST {sorobanRpcUrl}` method `getLedgerEntries` — read contract/account state |
-| 2.3.17 | Soroban RPC wrapper — getNetwork | `sdk.api.soroban.getNetwork()` | `POST {sorobanRpcUrl}` method `getNetwork` — network passphrase + protocol version |
-| 2.3.18 | Response standardization | All responses → `ApiResponse<T>` | Unified `{ data, pagination?, raw }` wrapper across Horizon + Soroban |
-| 2.3.19 | Error standardization | All errors → `ApiError` | Map Horizon HTTP errors + Soroban RPC errors to typed `ApiError` with codes |
-| 2.3.20 | Extensible external client | `sdk.api.external(baseUrl, options?)` | Factory method for partners to create type-safe clients for their own backend APIs |
-| 2.3.21 | Unit tests | - | Mock Horizon/Soroban responses, test pagination, error mapping, retry logic |
+| 2.3.7 | Horizon REST wrapper — effects | `sdk.api.horizon.getEffects({ account?, cursor?, limit? })` | `GET {horizonUrl}/effects` — account effects | ✅ Done |
+| 2.3.8 | Horizon REST wrapper — ledgers | `sdk.api.horizon.getLedger(sequence?)` | `GET {horizonUrl}/ledgers/{sequence}` — ledger info | ✅ Done |
+| 2.3.9 | Horizon REST wrapper — assets | `sdk.api.horizon.getAssets({ code?, issuer? })` | `GET {horizonUrl}/assets` — asset discovery | ✅ Done |
+| 2.3.10 | Horizon REST wrapper — order book | `sdk.api.horizon.getOrderBook({ selling, buying })` | `GET {horizonUrl}/order_book` — current offers | ✅ Done |
+| 2.3.11 | Horizon REST wrapper — trade aggregations | `sdk.api.horizon.getTradeAggregations({ base, counter, resolution })` | `GET {horizonUrl}/trade_aggregations` — OHLC data | ✅ Done |
+| 2.3.12 | Horizon REST wrapper — fee stats | `sdk.api.horizon.getFeeStats()` | `GET {horizonUrl}/fee_stats` — network fee percentiles | ✅ Done |
+| 2.3.13 | Soroban RPC wrapper — getHealth | `sdk.api.soroban.getHealth()` | `POST {sorobanRpcUrl}` method `getHealth` — node status | ✅ Done |
+| 2.3.14 | Soroban RPC wrapper — getTransaction | `sdk.api.soroban.getTransaction(hash)` | `POST {sorobanRpcUrl}` method `getTransaction` — tx status + result | ✅ Done |
+| 2.3.15 | Soroban RPC wrapper — getEvents | `sdk.api.soroban.getEvents({ startLedger, filters })` | `POST {sorobanRpcUrl}` method `getEvents` — contract events | ✅ Done |
+| 2.3.16 | Soroban RPC wrapper — getLedgerEntries | `sdk.api.soroban.getLedgerEntries(keys)` | `POST {sorobanRpcUrl}` method `getLedgerEntries` — read contract/account state | ✅ Done |
+| 2.3.17 | Soroban RPC wrapper — getNetwork | `sdk.api.soroban.getNetwork()` | `POST {sorobanRpcUrl}` method `getNetwork` — network passphrase + protocol version | ✅ Done |
+| 2.3.18 | Response standardization | All responses → `ApiResponse<T>` | Unified `{ data, pagination?, raw }` wrapper across Horizon + Soroban | ✅ Done |
+| 2.3.19 | Error standardization | All errors → `ApiError` | Map Horizon HTTP errors + Soroban RPC errors to typed `ApiError` with codes | ✅ Done |
+| 2.3.20 | Extensible external client | `sdk.api.external(baseUrl, options?)` | Factory method for partners to create type-safe clients for their own backend APIs | ✅ Done |
+| 2.3.21 | Unit tests | - | 78 tests: Horizon endpoints, Soroban RPC, external client, pagination, error mapping, retry | ✅ Done |
 
 ### Phase 2.4: WebSocket & Streaming Module (Weeks 9-10)
 
@@ -338,6 +338,20 @@ interface WirexSDKConfig {
 ### Phase 2.5: Wirex Reference Integration — Testnet (Week 10-11)
 
 **Files:** `src/reference/WirexPaymentFlow.ts`, `examples/wirex-settlement.ts`
+
+**Wirex BaaS API Credentials (Sandbox — shared, for initial testing):**
+
+| Parameter | Value |
+|-----------|-------|
+| Sandbox API URL | `https://api-baas.wirexapp.tech` |
+| Production API URL | `https://api-baas.wirexapp.com` |
+| `client_id` | `3fCeoWq6FOtKJBZiyorXnxE41Dqp2zKB` |
+| `client_secret` | `6FIY2GEQvdlgUEFHw4Dbii22_wCAqZ37lWV3TEMfTlkxrn8F5IbdgX9TiAvQUEsC` |
+| `partner_id` | `0x00000000000000000000000000000044` |
+| Sandbox helper API | `https://ramc.wirexapp.tech` (test event simulation) |
+| Blockchain (sandbox) | Stellar Testnet (Chain ID: 9223372036854775806) |
+
+> Note: These are shared sandbox credentials from [Wirex docs](https://docs.wirexapp.com/docs/environments#sandbox-test-credentials). Contact Wirex for dedicated company credentials.
 
 | # | Task | API | Details |
 |---|------|-----|---------|

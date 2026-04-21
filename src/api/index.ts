@@ -1,6 +1,7 @@
 export { ApiClient } from './ApiClient';
 export { HorizonClient } from './HorizonClient';
 export { SorobanRpcClient } from './SorobanRpcClient';
+export { ExternalClientFactory } from './ExternalClientFactory';
 export { ResponseMapper } from './ResponseMapper';
 export { ErrorMapper } from './ErrorMapper';
 
