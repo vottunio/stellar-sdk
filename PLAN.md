@@ -307,23 +307,23 @@ interface WirexSDKConfig {
 | 2.3.20 | Extensible external client | `sdk.api.external(baseUrl, options?)` | Factory method for partners to create type-safe clients for their own backend APIs | ✅ Done |
 | 2.3.21 | Unit tests | - | 78 tests: Horizon endpoints, Soroban RPC, external client, pagination, error mapping, retry | ✅ Done |
 
-### Phase 2.4: WebSocket & Streaming Module (Weeks 9-10)
+### Phase 2.4: WebSocket & Streaming Module (Weeks 9-10) ✅ COMPLETED
 
-**Files:** `src/websocket/`
+**Files:** `src/websocket/WebSocketClient.ts`, `EventRouter.ts`, `ReconnectionManager.ts`, `src/stellar/StreamingService.ts`
 
-| # | Task | API | Details |
-|---|------|-----|---------|
-| 2.4.1 | WebSocket client | `sdk.websocket` | Connection management, `ws` (Node) / native `WebSocket` (Browser) |
-| 2.4.2 | Connect / disconnect | `ws.connect()`, `ws.disconnect()` | Auth handshake on connect |
-| 2.4.3 | Auto-reconnection | Automatic | Exponential backoff, configurable max retries |
-| 2.4.4 | Heartbeat | Automatic | Ping/pong keep-alive |
-| 2.4.5 | Event subscription | `ws.on(event, handler)` | Type-safe event names + payloads |
-| 2.4.6 | Event filtering | `ws.subscribe({ events, account?, asset? })` | Server-side filter |
-| 2.4.7 | Connection status | `ws.on('connected')`, `ws.on('disconnected')`, `ws.on('error')` | Lifecycle callbacks |
-| 2.4.8 | Horizon SSE streaming | `sdk.stellar.stream.transactions(account)`, `.payments(account)` | `server.transactions().forAccount(addr).stream({ onmessage })` |
-| 2.4.9 | Stream cursor management | Internal | Resume from last cursor on reconnect |
-| 2.4.10 | Unit tests | - | Event routing, reconnection logic |
-| 2.4.11 | Integration tests | - | Stream testnet transactions |
+| # | Task | API | Details | Status |
+|---|------|-----|---------|--------|
+| 2.4.1 | WebSocket client | `sdk.websocket` | Connection management, `ws` (Node) / native `WebSocket` (Browser) | ✅ Done |
+| 2.4.2 | Connect / disconnect | `ws.connect()`, `ws.disconnect()` | Connection lifecycle with cleanup | ✅ Done |
+| 2.4.3 | Auto-reconnection | Automatic | Exponential backoff via ReconnectionManager, configurable max retries, 30s cap | ✅ Done |
+| 2.4.4 | Heartbeat | Automatic | Ping/pong keep-alive every 30s | ✅ Done |
+| 2.4.5 | Event subscription | `ws.on(event, handler)` | Type-safe event names + payloads, returns unsubscribe fn | ✅ Done |
+| 2.4.6 | Event filtering | `ws.subscribe({ events, account?, asset? })` | Client-side filter via EventRouter | ✅ Done |
+| 2.4.7 | Connection status | `ws.on('connected')`, `ws.on('disconnected')`, `ws.on('error')` | Lifecycle callbacks + `getState()`, `isConnected()` | ✅ Done |
+| 2.4.8 | Horizon SSE streaming | `sdk.stellar.stream.transactions(account)`, `.payments(account)`, `.operations(account)`, `.effects(account)`, `.ledgers()` | `server.transactions().forAccount(addr).stream({ onmessage })` | ✅ Done |
+| 2.4.9 | Stream cursor management | `getCursor()`, `setCursor()`, `clearCursors()` | Auto-saves paging_token, resumes from last cursor on reconnect | ✅ Done |
+| 2.4.10 | Unit tests | - | 50 tests: EventRouter, ReconnectionManager, WebSocketClient, StreamingService | ✅ Done |
+| 2.4.11 | Integration tests | - | Stream testnet transactions in real-time + verify cursor persistence | ✅ Done |
 
 **Supported WebSocket events:**
 
