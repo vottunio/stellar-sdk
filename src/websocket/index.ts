@@ -1,1 +1,3 @@
-// WebSocket module — implemented in Phase 2.4
+export { WebSocketClient } from './WebSocketClient';
+export { EventRouter } from './EventRouter';
+export { ReconnectionManager } from './ReconnectionManager';

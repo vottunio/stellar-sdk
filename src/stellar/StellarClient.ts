@@ -20,6 +20,7 @@ import { AccountService } from './AccountService';
 import { AssetService } from './AssetService';
 import { PaymentService } from './PaymentService';
 import { SorobanService } from './SorobanService';
+import { StreamingService } from './StreamingService';
 
 /**
  * Unified Stellar client — facade providing access to all Stellar
@@ -56,12 +57,14 @@ export class StellarClient {
   private readonly assetService: AssetService;
   private readonly paymentService: PaymentService;
   private readonly sorobanService: SorobanService;
+  private readonly streamingService: StreamingService;
 
   constructor(config: ResolvedConfig) {
     this.accountService = new AccountService(config);
     this.assetService = new AssetService(config);
     this.paymentService = new PaymentService(config);
     this.sorobanService = new SorobanService(config);
+    this.streamingService = new StreamingService(config);
   }
 
   // ─── Asset Wrapper (2.2.12) ────────────────────────────────────────────────
@@ -156,5 +159,12 @@ export class StellarClient {
   /** Access the Soroban smart contract service. */
   get soroban(): SorobanService {
     return this.sorobanService;
+  }
+
+  // ─── Streaming Access ─────────────────────────────────────────────────────
+
+  /** Horizon SSE streaming — real-time transactions, payments, operations, effects, ledgers. */
+  get stream(): StreamingService {
+    return this.streamingService;
   }
 }

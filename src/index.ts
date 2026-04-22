@@ -11,6 +11,7 @@ import { FeeEstimator } from './transaction/FeeEstimator';
 import { WirexSDKConfig, ResolvedConfig, NetworkType } from './types/config.types';
 import { TransactionBuilderOptions } from './types/transaction.types';
 import { WalletManager } from './wallet/WalletManager';
+import { WebSocketClient } from './websocket/WebSocketClient';
 
 // Re-export all types
 export * from './types';
@@ -28,10 +29,13 @@ export { WalletManager, KeypairWallet, HDWallet, ExternalWallet } from './wallet
 export { WirexTransactionBuilder, TransactionSubmitter, FeeEstimator, TransactionTracker } from './transaction';
 
 // Re-export stellar
-export { StellarClient, AccountService, AssetService, PaymentService, SorobanService, TransactionHelper } from './stellar';
+export { StellarClient, AccountService, AssetService, PaymentService, SorobanService, StreamingService, TransactionHelper } from './stellar';
 
 // Re-export api
 export { ApiClient, HorizonClient, SorobanRpcClient, ExternalClientFactory, ResponseMapper, ErrorMapper } from './api';
+
+// Re-export websocket
+export { WebSocketClient, EventRouter, ReconnectionManager } from './websocket';
 
 /**
  * Main SDK class — entry point for all Wirex Stellar SDK functionality.
@@ -55,6 +59,7 @@ export class WirexSDK {
   private stellarClient: StellarClient | null = null;
   private horizonClient: HorizonClient | null = null;
   private sorobanRpcClient: SorobanRpcClient | null = null;
+  private webSocketClient: WebSocketClient | null = null;
 
   constructor(config: WirexSDKConfig) {
     this.configManager = new ConfigManager(config);
@@ -73,6 +78,10 @@ export class WirexSDK {
     this.stellarClient = null;
     this.horizonClient = null;
     this.sorobanRpcClient = null;
+    if (this.webSocketClient) {
+      this.webSocketClient.disconnect();
+      this.webSocketClient = null;
+    }
     if (this.sorobanService) {
       this.sorobanService.reconnect(this.configManager.getConfig());
     }
@@ -139,8 +148,13 @@ export class WirexSDK {
     };
   }
 
-  // Phase 2.4: WebSocket & Streaming
-  // get websocket(): WebSocketClient { ... }
+  /** WebSocket client for real-time event streaming. */
+  get websocket(): WebSocketClient {
+    if (!this.webSocketClient) {
+      this.webSocketClient = new WebSocketClient(this.configManager.getConfig());
+    }
+    return this.webSocketClient;
+  }
 
   // Phase 2.5: Reference Integration
   // get reference(): WirexPaymentFlow { ... }
