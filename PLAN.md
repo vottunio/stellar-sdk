@@ -335,7 +335,7 @@ interface WirexSDKConfig {
 | `account.updated` | `{ account, balances, signers }` |
 | `contract.event` | `{ contractId, topic, data, ledger }` |
 
-### Phase 2.5: Wirex Reference Integration — Testnet (Week 10-11)
+### Phase 2.5: Wirex Reference Integration — Testnet (Week 10-11) ✅ COMPLETED
 
 **Files:** `src/reference/WirexPaymentFlow.ts`, `examples/wirex-settlement.ts`
 
