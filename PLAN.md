@@ -252,7 +252,7 @@ interface WirexSDKConfig {
 | 2.1.7 | Prepare transaction | Internal — simulate before submit | `server.prepareTransaction(tx)` — adds resource footprint | ✅ Done |
 | 2.1.8 | Error normalization | Soroban errors → `StellarError` | Map simulation failures, invoke errors to typed `SorobanErrorCode` | ✅ Done |
 | 2.1.9 | Unit tests | - | 31 tests: encoding/decoding, error mapping, invoke, read, prepare, validation | ✅ Done |
-| 2.1.10 | Integration tests | - | Invoke token contract on testnet | ⏳ Pending testnet contract |
+| 2.1.10 | Integration tests | - | Invoke token contract on testnet (native XLM SAC: CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC) | ✅ Done |
 
 ### Phase 2.2: Stellar Blockchain Interaction — Extended (Week 7-8) ✅ COMPLETED
 
@@ -275,7 +275,7 @@ interface WirexSDKConfig {
 | 2.2.11 | Manage data | `sdk.stellar.manageData({ sourceAccount, name, value })` | `Operation.manageData()` | ✅ Done |
 | 2.2.12 | Asset class | `sdk.stellar.Asset.native()`, `.custom(code, issuer)` | Wraps `StellarSdk.Asset` | ✅ Done |
 | 2.2.13 | Unit tests | - | 45 tests: all operations, edge cases, validation | ✅ Done |
-| 2.2.14 | Integration tests | - | Payments, trustlines on testnet | ⏳ Phase 2.5 |
+| 2.2.14 | Integration tests | - | Payments, trustlines, manage data, account creation on testnet (15 tests) | ✅ Done |
 
 ### Phase 2.3: API Client Module (Weeks 8-9) ✅ COMPLETED
 
@@ -355,19 +355,19 @@ interface WirexSDKConfig {
 
 | # | Task | API | Details |
 |---|------|-----|---------|
-| 2.5.1 | Settlement flow class | `sdk.reference.createSettlement({ asset, amount, destination })` | Orchestrates: create/load wallet → check trustline → build tx → sign → submit → track confirmation |
-| 2.5.2 | XLM settlement | Example flow | Native XLM payment end-to-end on testnet |
-| 2.5.3 | USDC settlement | Example flow | USDC payment (trustline check → payment → confirm) |
-| 2.5.4 | EURC settlement | Example flow | EURC payment (same pattern as USDC) |
-| 2.5.5 | Non-custodial pattern | Documentation | Client-side signing, no private keys on server |
-| 2.5.6 | Partner integration pattern | Documentation + `examples/partner-integration.ts` | How a partner (e.g. Wirex) connects their backend via `sdk.api.external()` to coordinate off-chain + on-chain flows |
-| 2.5.7 | E2E test | - | Full testnet settlement flow |
-| 2.5.8 | Example + docs | `examples/wirex-settlement.ts` | Reproducible reference implementation |
+| 2.5.1 | Settlement flow class | `sdk.reference.createSettlement({ asset, amount, destination })` | Orchestrates: create/load wallet → check trustline → build tx → sign → submit → track confirmation | ✅ Done |
+| 2.5.2 | XLM settlement | Example flow | Native XLM payment end-to-end on testnet | ✅ Done |
+| 2.5.3 | USDC settlement | Example flow | USDC payment (trustline check → payment → confirm) | ✅ Done |
+| 2.5.4 | EURC settlement | Example flow | EURC payment (same pattern as USDC) | ✅ Done |
+| 2.5.5 | Non-custodial pattern | Documentation | Client-side signing, no private keys on server | ✅ Done |
+| 2.5.6 | Partner integration pattern | Documentation + `examples/partner-integration.ts` | How a partner (e.g. Wirex) connects their backend via `sdk.api.external()` to coordinate off-chain + on-chain flows | ✅ Done |
+| 2.5.7 | E2E test | - | Full testnet settlement flow | ✅ Done |
+| 2.5.8 | Example + docs | `examples/wirex-settlement.ts` | Reproducible reference implementation | ✅ Done |
 
 **Tranche 2 Acceptance Criteria:**
-- [ ] End-to-end testnet payment flows executed via the SDK
-- [ ] Live streaming events demonstrated
-- [ ] Reference integration reproducible following published documentation
+- [x] End-to-end testnet payment flows executed via the SDK (settlement E2E + stellar operations integration tests)
+- [x] Live streaming events demonstrated (streaming integration test)
+- [x] Reference integration reproducible following published documentation (wirex-settlement.ts + partner-integration.ts + non-custodial docs)
 
 ---
 

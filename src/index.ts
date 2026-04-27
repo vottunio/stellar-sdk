@@ -11,6 +11,7 @@ import { FeeEstimator } from './transaction/FeeEstimator';
 import { WirexSDKConfig, ResolvedConfig, NetworkType } from './types/config.types';
 import { TransactionBuilderOptions } from './types/transaction.types';
 import { WalletManager } from './wallet/WalletManager';
+import { WirexPaymentFlow } from './reference/WirexPaymentFlow';
 import { WebSocketClient } from './websocket/WebSocketClient';
 
 // Re-export all types
@@ -37,6 +38,9 @@ export { ApiClient, HorizonClient, SorobanRpcClient, ExternalClientFactory, Resp
 // Re-export websocket
 export { WebSocketClient, EventRouter, ReconnectionManager } from './websocket';
 
+// Re-export reference
+export { WirexPaymentFlow } from './reference';
+
 /**
  * Main SDK class — entry point for all Wirex Stellar SDK functionality.
  *
@@ -60,6 +64,7 @@ export class WirexSDK {
   private horizonClient: HorizonClient | null = null;
   private sorobanRpcClient: SorobanRpcClient | null = null;
   private webSocketClient: WebSocketClient | null = null;
+  private paymentFlow: WirexPaymentFlow | null = null;
 
   constructor(config: WirexSDKConfig) {
     this.configManager = new ConfigManager(config);
@@ -78,6 +83,7 @@ export class WirexSDK {
     this.stellarClient = null;
     this.horizonClient = null;
     this.sorobanRpcClient = null;
+    this.paymentFlow = null;
     if (this.webSocketClient) {
       this.webSocketClient.disconnect();
       this.webSocketClient = null;
@@ -156,6 +162,11 @@ export class WirexSDK {
     return this.webSocketClient;
   }
 
-  // Phase 2.5: Reference Integration
-  // get reference(): WirexPaymentFlow { ... }
+  /** Reference integration — settlement flows (XLM, USDC, EURC). */
+  get reference(): WirexPaymentFlow {
+    if (!this.paymentFlow) {
+      this.paymentFlow = new WirexPaymentFlow(this.configManager.getConfig());
+    }
+    return this.paymentFlow;
+  }
 }
