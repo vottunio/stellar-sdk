@@ -1,1 +1,1 @@
-// Reference Integration module — implemented in Phase 2.5
+export { WirexPaymentFlow } from './WirexPaymentFlow';
