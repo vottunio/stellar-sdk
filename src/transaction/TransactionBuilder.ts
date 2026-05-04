@@ -15,6 +15,7 @@ import {
   ChangeTrustParams,
   CreateAccountParams,
   FeeEstimate,
+  FeeStrategy,
   ManageDataParams,
   MemoSpec,
   PathPaymentStrictSendParams,
@@ -22,6 +23,7 @@ import {
   TransactionBuilderOptions,
   TransactionResult,
 } from '../types/transaction.types';
+import { FeeEstimator } from './FeeEstimator';
 import { Wallet } from '../types/wallet.types';
 
 import { TransactionSubmitter } from './TransactionSubmitter';
@@ -45,6 +47,7 @@ export class WirexTransactionBuilder {
   private memo?: MemoSpec;
   private timeoutSeconds = 180;
   private timeBounds: { minTime: string; maxTime: string } | null = null;
+  private feeStrategy: FeeStrategy | null = null;
   private builtXdr: string | null = null;
   private signedXdr: string | null = null;
 
@@ -148,6 +151,16 @@ export class WirexTransactionBuilder {
     return this;
   }
 
+  /**
+   * Set a dynamic fee strategy for this transaction.
+   * When set, `build()` uses congestion-aware fee estimation via `/fee_stats`.
+   * If a fixed `fee` was passed in options, it takes precedence over the strategy.
+   */
+  setFeeStrategy(strategy: FeeStrategy): this {
+    this.feeStrategy = strategy;
+    return this;
+  }
+
   /** Estimate fees for the current operations. */
   async estimateFees(): Promise<FeeEstimate> {
     const server = new Horizon.Server(this.config.horizonUrl);
@@ -164,7 +177,23 @@ export class WirexTransactionBuilder {
   async build(): Promise<this> {
     const server = new Horizon.Server(this.config.horizonUrl);
     const account = await server.loadAccount(this.options.sourceAccount);
-    const fee = this.options.fee ?? String(await server.fetchBaseFee());
+
+    let fee: string;
+    if (this.options.fee) {
+      // Explicit fee takes precedence
+      fee = this.options.fee;
+    } else if (this.feeStrategy || this.config.network === 'mainnet') {
+      // Use dynamic fee on mainnet (defaults to 'medium') or when strategy is explicitly set
+      const estimator = new FeeEstimator(this.config);
+      const strategy = this.feeStrategy ?? 'medium';
+      const estimate = await estimator.estimateDynamic(
+        Math.max(this.operations.length, 1),
+        strategy,
+      );
+      fee = String(Math.ceil(parseInt(estimate.estimatedFee, 10) / Math.max(this.operations.length, 1)));
+    } else {
+      fee = String(await server.fetchBaseFee());
+    }
 
     const builderOpts: Record<string, unknown> = {
       fee,
