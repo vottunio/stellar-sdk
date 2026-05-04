@@ -35,7 +35,11 @@ export class ConfigManager {
     return this.logger;
   }
 
-  /** Hot-switch the active network. Re-resolves URLs and passphrase. */
+  /**
+   * Hot-switch the active network. Re-resolves URLs and passphrase.
+   * When switching to mainnet, resets to official preset URLs to prevent
+   * testnet URL leakage from a prior testnet session.
+   */
   setNetwork(network: NetworkType): void {
     this.validateNetwork(network);
     const preset = NETWORK_PRESETS[network];
@@ -96,6 +100,12 @@ export class ConfigManager {
     if (options.externalApiUrl !== undefined) {
       this.validateUrl(options.externalApiUrl, 'externalApiUrl');
     }
+
+    // Mainnet safety: block testnet URLs when targeting mainnet
+    if (options.network === 'mainnet') {
+      this.validateMainnetSafety(options);
+    }
+
     if (options.logging?.level !== undefined) {
       this.validateLogLevel(options.logging.level);
     }
@@ -168,6 +178,41 @@ export class ConfigManager {
           ConfigErrorCode.INVALID_RETRY,
           { field: 'backoffMultiplier', value: retry.backoffMultiplier },
         );
+      }
+    }
+  }
+
+  /** Testnet URL patterns that must never appear in mainnet config. */
+  private static readonly TESTNET_PATTERNS = [
+    'testnet',
+    'friendbot',
+    'futurenet',
+    'sandbox',
+  ];
+
+  /**
+   * Validate that no testnet URLs or defaults leak into mainnet configuration.
+   * Blocks initialization if custom URLs contain testnet indicators.
+   */
+  private validateMainnetSafety(options: WirexSDKConfig): void {
+    const urlFields: Array<{ field: string; value?: string }> = [
+      { field: 'horizonUrl', value: options.horizonUrl },
+      { field: 'sorobanRpcUrl', value: options.sorobanRpcUrl },
+      { field: 'externalApiUrl', value: options.externalApiUrl },
+    ];
+
+    for (const { field, value } of urlFields) {
+      if (value === undefined) continue;
+      const lower = value.toLowerCase();
+      for (const pattern of ConfigManager.TESTNET_PATTERNS) {
+        if (lower.includes(pattern)) {
+          throw new ConfigError(
+            `Mainnet safety violation: "${field}" contains "${pattern}". ` +
+            `Testnet URLs must not be used with mainnet. Received: ${value}`,
+            ConfigErrorCode.MAINNET_SAFETY,
+            { field, url: value, pattern },
+          );
+        }
       }
     }
   }

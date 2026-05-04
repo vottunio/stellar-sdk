@@ -375,19 +375,19 @@ interface WirexSDKConfig {
 
 ### Phase 3.1: Mainnet Hardening (Weeks 12-13)
 
-| # | Task | Details |
-|---|------|---------|
-| 3.1.1 | Mainnet config validation | Strict validation: no testnet defaults leak to mainnet |
-| 3.1.2 | Fee strategy mainnet | Dynamic fee escalation based on network congestion |
-| 3.1.3 | Rate limiting | Respect Horizon rate limits, implement client-side throttling |
-| 3.1.4 | Error handling audit | Review all error paths, ensure no unhandled rejections |
-| 3.1.5 | Security audit | No private keys in logs, no secrets in error messages, input validation |
-| 3.1.6 | Timeout tuning | Production-appropriate timeouts for all services |
-| 3.1.7 | Retry tuning | Production retry policies (idempotency safety) |
-| 3.1.8 | Tree-shaking verification | Ensure unused modules are stripped in ESM builds |
-| 3.1.9 | Bundle size audit | Target <100KB gzipped for core |
-| 3.1.10 | Browser compatibility | Test in Chrome, Firefox, Safari, Edge |
-| 3.1.11 | React Native compatibility | Verify crypto polyfills, WebSocket works |
+| # | Task | Details | Status |
+|---|------|---------|--------|
+| 3.1.1 | Mainnet config validation | Strict validation: no testnet defaults leak to mainnet | ✅ Done |
+| 3.1.2 | Fee strategy mainnet | Dynamic fee escalation based on network congestion | ✅ Done |
+| 3.1.3 | Rate limiting | Respect Horizon rate limits, implement client-side throttling | ✅ Done |
+| 3.1.4 | Error handling audit | Review all error paths, ensure no unhandled rejections | |
+| 3.1.5 | Security audit | No private keys in logs, no secrets in error messages, input validation | |
+| 3.1.6 | Timeout tuning | Production-appropriate timeouts for all services | |
+| 3.1.7 | Retry tuning | Production retry policies (idempotency safety) | |
+| 3.1.8 | Tree-shaking verification | Ensure unused modules are stripped in ESM builds | |
+| 3.1.9 | Bundle size audit | Target <100KB gzipped for core | |
+| 3.1.10 | Browser compatibility | Test in Chrome, Firefox, Safari, Edge | |
+| 3.1.11 | React Native compatibility | Verify crypto polyfills, WebSocket works | |
 
 ### Phase 3.2: Testing & Coverage (Weeks 13-14)
 
