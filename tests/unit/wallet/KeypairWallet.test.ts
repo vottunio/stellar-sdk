@@ -1,7 +1,7 @@
 import { Keypair, TransactionBuilder, Networks, Account, Operation, Asset } from '@stellar/stellar-sdk';
 
-import { KeypairWallet } from '../../../src/wallet/KeypairWallet';
 import { WalletError } from '../../../src/errors/WalletError';
+import { KeypairWallet } from '../../../src/wallet/KeypairWallet';
 
 describe('KeypairWallet', () => {
   const horizonUrl = 'https://horizon-testnet.stellar.org';

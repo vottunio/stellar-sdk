@@ -7,8 +7,8 @@ import axios, {
 
 import { Logger } from '../config/Logger';
 import { ApiError } from '../errors/ApiError';
-import { ResolvedConfig } from '../types/config.types';
 import { ApiErrorCode } from '../types/api.types';
+import { ResolvedConfig } from '../types/config.types';
 
 /**
  * Base HTTP client built on axios. Provides interceptors for logging,

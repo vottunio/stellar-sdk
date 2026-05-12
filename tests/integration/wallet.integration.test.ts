@@ -12,10 +12,10 @@
  */
 import { Keypair } from '@stellar/stellar-sdk';
 
-import { KeypairWallet } from '../../src/wallet/KeypairWallet';
-import { HDWallet } from '../../src/wallet/HDWallet';
-import { WalletManager } from '../../src/wallet/WalletManager';
 import { ConfigManager } from '../../src/config/ConfigManager';
+import { HDWallet } from '../../src/wallet/HDWallet';
+import { KeypairWallet } from '../../src/wallet/KeypairWallet';
+import { WalletManager } from '../../src/wallet/WalletManager';
 
 const SHOULD_RUN = process.env.RUN_INTEGRATION === 'true';
 const describeIntegration = SHOULD_RUN ? describe : describe.skip;

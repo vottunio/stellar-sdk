@@ -1,9 +1,9 @@
 import * as bip39 from 'bip39';
 
 import { ConfigManager } from '../../../src/config/ConfigManager';
-import { WalletManager } from '../../../src/wallet/WalletManager';
-import { ExternalWallet } from '../../../src/wallet/ExternalWallet';
 import { WalletError } from '../../../src/errors/WalletError';
+import { ExternalWallet } from '../../../src/wallet/ExternalWallet';
+import { WalletManager } from '../../../src/wallet/WalletManager';
 
 describe('WalletManager', () => {
   const config = new ConfigManager({ network: 'testnet' }).getConfig();

@@ -1,11 +1,9 @@
 import {
   TransactionBuilder as StellarTransactionBuilder,
-  Networks,
   Operation,
   Asset,
   Memo,
   Horizon,
-  Account,
 } from '@stellar/stellar-sdk';
 
 import { StellarError } from '../errors/StellarError';

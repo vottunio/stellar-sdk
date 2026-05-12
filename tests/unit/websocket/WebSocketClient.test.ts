@@ -1,4 +1,3 @@
-import WebSocket from 'ws';
 import { EventEmitter } from 'events';
 
 import { ConfigManager } from '../../../src/config/ConfigManager';

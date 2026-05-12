@@ -1,8 +1,8 @@
 import { Horizon } from '@stellar/stellar-sdk';
 
 import { ConfigManager } from '../../../src/config/ConfigManager';
-import { TransactionTracker } from '../../../src/transaction/TransactionTracker';
 import { StellarError } from '../../../src/errors/StellarError';
+import { TransactionTracker } from '../../../src/transaction/TransactionTracker';
 
 jest.mock('@stellar/stellar-sdk', () => {
   const actual = jest.requireActual('@stellar/stellar-sdk');
