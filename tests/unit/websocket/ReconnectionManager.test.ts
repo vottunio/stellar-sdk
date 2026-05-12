@@ -1,5 +1,5 @@
-import { ReconnectionManager } from '../../../src/websocket/ReconnectionManager';
 import { Logger } from '../../../src/config/Logger';
+import { ReconnectionManager } from '../../../src/websocket/ReconnectionManager';
 
 describe('ReconnectionManager', () => {
   const retryConfig = { maxAttempts: 3, backoffMultiplier: 2 };

@@ -1,4 +1,4 @@
-import { Keypair, Networks, Account, TransactionBuilder as StellarTxBuilder, Operation, Horizon } from '@stellar/stellar-sdk';
+import { Keypair, Account, Horizon } from '@stellar/stellar-sdk';
 
 import { ConfigManager } from '../../../src/config/ConfigManager';
 import { WirexTransactionBuilder } from '../../../src/transaction/TransactionBuilder';

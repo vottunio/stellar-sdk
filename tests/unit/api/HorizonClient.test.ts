@@ -1,6 +1,6 @@
-import { ConfigManager } from '../../../src/config/ConfigManager';
-import { HorizonClient } from '../../../src/api/HorizonClient';
 import { ApiClient } from '../../../src/api/ApiClient';
+import { HorizonClient } from '../../../src/api/HorizonClient';
+import { ConfigManager } from '../../../src/config/ConfigManager';
 
 // Mock ApiClient
 jest.mock('../../../src/api/ApiClient');

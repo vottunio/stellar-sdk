@@ -12,8 +12,8 @@ import {
 } from '@stellar/stellar-sdk';
 
 import { ConfigManager } from '../../../src/config/ConfigManager';
-import { SorobanService } from '../../../src/stellar/SorobanService';
 import { StellarError } from '../../../src/errors/StellarError';
+import { SorobanService } from '../../../src/stellar/SorobanService';
 import { SorobanErrorCode } from '../../../src/types/stellar.types';
 
 // ─── Mocks ───────────────────────────────────────────────────────────────────
