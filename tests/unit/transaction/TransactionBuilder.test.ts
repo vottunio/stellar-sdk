@@ -413,18 +413,20 @@ describe('WirexTransactionBuilder', () => {
       await expect(builder.submit()).rejects.toThrow(/must be signed/);
     });
 
-    it('should throw for non-native asset without issuer', async () => {
+    it('should throw for non-native asset without issuer (early validation)', () => {
       const builder = new WirexTransactionBuilder(config, {
         sourceAccount: sourceKeypair.publicKey(),
       });
 
-      builder.addPayment({
-        destination: destKeypair.publicKey(),
-        asset: { code: 'USDC' }, // missing issuer
-        amount: '10',
-      });
-
-      await expect(builder.build()).rejects.toThrow(/requires an issuer/);
+      // After 3.1.5 hardening, validation is eager: throws at addPayment(),
+      // not deferred to build(). Failing fast surfaces bugs sooner.
+      expect(() =>
+        builder.addPayment({
+          destination: destKeypair.publicKey(),
+          asset: { code: 'USDC' }, // missing issuer
+          amount: '10',
+        }),
+      ).toThrow(/requires an issuer/);
     });
   });
 });

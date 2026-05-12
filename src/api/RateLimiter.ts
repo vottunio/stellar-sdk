@@ -77,16 +77,19 @@ export class RateLimiter {
   onRateLimited(retryAfterHeader?: string): void {
     let delayMs = 1000; // default 1s backoff if no header
 
-    if (retryAfterHeader) {
-      const seconds = parseInt(retryAfterHeader, 10);
-      if (!isNaN(seconds)) {
-        delayMs = seconds * 1000;
+    const trimmed = retryAfterHeader?.trim();
+    if (trimmed) {
+      const seconds = parseInt(trimmed, 10);
+      if (!isNaN(seconds) && seconds >= 0) {
+        // Cap at 10 minutes to avoid pathological waits
+        delayMs = Math.min(seconds * 1000, 600_000);
       } else {
         // Try parsing as HTTP-date
-        const date = new Date(retryAfterHeader).getTime();
-        if (!isNaN(date)) {
-          delayMs = Math.max(date - Date.now(), 0);
+        const date = new Date(trimmed).getTime();
+        if (!isNaN(date) && date > Date.now()) {
+          delayMs = Math.min(date - Date.now(), 600_000);
         }
+        // If parse fails entirely, fall through to default 1s
       }
     }
 

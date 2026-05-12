@@ -6,6 +6,7 @@ import {
 
 import { Logger } from '../config/Logger';
 import { StellarError } from '../errors/StellarError';
+import { getErrorMessage } from '../errors/utils';
 import { ResolvedConfig } from '../types/config.types';
 import {
   StellarPathPaymentStrictReceiveParams,
@@ -82,7 +83,7 @@ export class PaymentService {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Payment failed: ${(error as Error).message}`,
+        `Payment failed: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.PAYMENT_FAILED,
         { destination: params.destination, amount: params.amount },
       );
@@ -123,7 +124,7 @@ export class PaymentService {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Path payment strict send failed: ${(error as Error).message}`,
+        `Path payment strict send failed: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.PATH_PAYMENT_FAILED,
         { sendAmount: params.sendAmount },
       );
@@ -164,7 +165,7 @@ export class PaymentService {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Path payment strict receive failed: ${(error as Error).message}`,
+        `Path payment strict receive failed: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.PATH_PAYMENT_FAILED,
         { destAmount: params.destAmount },
       );

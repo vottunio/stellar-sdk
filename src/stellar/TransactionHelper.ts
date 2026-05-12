@@ -6,6 +6,7 @@ import {
 } from '@stellar/stellar-sdk';
 
 import { StellarError } from '../errors/StellarError';
+import { getErrorMessage } from '../errors/utils';
 import { ResolvedConfig } from '../types/config.types';
 import { StellarOperationErrorCode } from '../types/stellar.types';
 import { TransactionResult } from '../types/transaction.types';
@@ -70,7 +71,7 @@ export class TransactionHelper {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Transaction failed: ${(error as Error).message}`,
+        `Transaction failed: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.BUILD_FAILED,
         { sourceAccount },
       );

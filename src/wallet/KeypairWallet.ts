@@ -9,6 +9,8 @@ import nacl from 'tweetnacl';
 
 import { WalletError, WalletErrorCode } from '../errors/WalletError';
 import { Balance, EncryptedWalletExport, ManagedWallet } from '../types/wallet.types';
+import { base64ToBytes, bytesToBase64 } from '../utils/base64';
+import { ensureSecureRandom } from '../utils/crypto-polyfill-check';
 
 /**
  * Keypair-based wallet that holds a Stellar secret key in memory.
@@ -25,6 +27,7 @@ export class KeypairWallet implements ManagedWallet {
 
   /** Create a new random wallet. */
   static create(horizonUrl: string): KeypairWallet {
+    ensureSecureRandom();
     return new KeypairWallet(Keypair.random(), horizonUrl);
   }
 
@@ -46,9 +49,9 @@ export class KeypairWallet implements ManagedWallet {
   static fromEncrypted(encryptedJson: string, password: string, horizonUrl: string): KeypairWallet {
     try {
       const payload = JSON.parse(encryptedJson) as EncryptedWalletExport;
-      const salt = Buffer.from(payload.salt, 'base64');
-      const nonce = Buffer.from(payload.nonce, 'base64');
-      const ciphertext = Buffer.from(payload.ciphertext, 'base64');
+      const salt = base64ToBytes(payload.salt);
+      const nonce = base64ToBytes(payload.nonce);
+      const ciphertext = base64ToBytes(payload.ciphertext);
 
       const passBytes = new TextEncoder().encode(password);
       const combined = new Uint8Array(passBytes.length + salt.length);
@@ -100,6 +103,7 @@ export class KeypairWallet implements ManagedWallet {
 
   exportEncrypted(password: string): string {
     try {
+      ensureSecureRandom();
       const salt = nacl.randomBytes(16);
       const key = this.deriveKey(password, salt);
       const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
@@ -113,9 +117,9 @@ export class KeypairWallet implements ManagedWallet {
       const payload: EncryptedWalletExport = {
         version: 1,
         publicKey: this.keypair.publicKey(),
-        ciphertext: Buffer.from(ciphertext).toString('base64'),
-        nonce: Buffer.from(nonce).toString('base64'),
-        salt: Buffer.from(salt).toString('base64'),
+        ciphertext: bytesToBase64(ciphertext),
+        nonce: bytesToBase64(nonce),
+        salt: bytesToBase64(salt),
       };
 
       return JSON.stringify(payload);

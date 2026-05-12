@@ -1,5 +1,6 @@
 import { Logger } from '../config/Logger';
 import { StellarError } from '../errors/StellarError';
+import { getErrorMessage } from '../errors/utils';
 import { StellarClient } from '../stellar/StellarClient';
 import { ResolvedConfig } from '../types/config.types';
 import {
@@ -111,10 +112,12 @@ export class WirexPaymentFlow {
         // Transaction is already confirmed by the time sendPayment returns
         // (Horizon waits for ledger inclusion). We verify the result.
         if (!txResult.successful) {
+          // Do NOT include resultXdr in the error message — it can contain
+          // signed transaction envelope data. Keep only the public hash for debugging.
           throw new StellarError(
-            `Settlement transaction failed: ${txResult.resultXdr}`,
+            `Settlement transaction failed (hash: ${txResult.hash})`,
             'SETTLEMENT_TX_FAILED',
-            { hash: txResult.hash },
+            { hash: txResult.hash, ledger: txResult.ledger },
           );
         }
         return txResult.hash;
@@ -131,7 +134,7 @@ export class WirexPaymentFlow {
         totalDurationMs: Date.now() - startTime,
       };
     } catch (error) {
-      this.logger.error(`Settlement failed: ${(error as Error).message}`);
+      this.logger.error(`Settlement failed: ${getErrorMessage(error)}`);
       return {
         successful: false,
         steps,
@@ -175,7 +178,7 @@ export class WirexPaymentFlow {
       if (hash) step.hash = hash;
     } catch (error) {
       step.status = 'failed';
-      step.error = (error as Error).message;
+      step.error = getErrorMessage(error);
       throw error;
     } finally {
       step.durationMs = Date.now() - stepStart;

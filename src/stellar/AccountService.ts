@@ -6,6 +6,7 @@ import {
 
 import { Logger } from '../config/Logger';
 import { StellarError } from '../errors/StellarError';
+import { getErrorMessage } from '../errors/utils';
 import { ResolvedConfig } from '../types/config.types';
 import {
   AccountInfo,
@@ -100,7 +101,7 @@ export class AccountService {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Failed to fund test account: ${(error as Error).message}`,
+        `Failed to fund test account: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.FUND_FAILED,
         { address },
       );
@@ -135,7 +136,7 @@ export class AccountService {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Failed to create account: ${(error as Error).message}`,
+        `Failed to create account: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.BUILD_FAILED,
         { destination: params.destination },
       );
@@ -170,7 +171,7 @@ export class AccountService {
         );
       }
       throw new StellarError(
-        `Failed to get balances: ${(error as Error).message}`,
+        `Failed to get balances: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.ACCOUNT_NOT_FOUND,
         { address },
       );
@@ -228,7 +229,7 @@ export class AccountService {
         );
       }
       throw new StellarError(
-        `Failed to get account info: ${(error as Error).message}`,
+        `Failed to get account info: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.ACCOUNT_NOT_FOUND,
         { address },
       );
@@ -262,7 +263,7 @@ export class AccountService {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Failed to manage data: ${(error as Error).message}`,
+        `Failed to manage data: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.MANAGE_DATA_FAILED,
         { name: params.name },
       );

@@ -26,11 +26,28 @@ export interface LoggingConfig {
 
 /**
  * Per-service timeout configuration (in milliseconds).
+ *
+ * Defaults differ between testnet and mainnet:
+ * - **Testnet** uses lower timeouts (faster fail) since the network is lightly loaded.
+ * - **Mainnet** uses higher timeouts to tolerate congestion-induced latency
+ *   without false-failing legitimate operations.
  */
 export interface TimeoutConfig {
+  /** Timeout for direct Horizon REST calls (ms). */
   horizon: number;
+  /** Timeout for the underlying HTTP API client (ms). */
   api: number;
+  /** Timeout for WebSocket connection establishment (ms). */
   websocket: number;
+  /**
+   * Stellar transaction `setTimeout()` value, in **seconds**.
+   * Sets the maximum amount of time a transaction can wait in the
+   * mempool before expiring. Stellar best practice: 30s for testnet,
+   * 180s for mainnet to handle congestion.
+   */
+  transactionSeconds: number;
+  /** Timeout for Soroban RPC calls (ms). Soroban operations are slower than Horizon. */
+  soroban: number;
 }
 
 /**

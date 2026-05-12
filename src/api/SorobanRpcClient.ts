@@ -126,7 +126,9 @@ export class SorobanRpcClient {
   private requestId = 0;
 
   constructor(config: ResolvedConfig) {
-    this.client = new ApiClient(config, config.sorobanRpcUrl, config.timeout.api);
+    // Use the dedicated Soroban timeout — Soroban operations (especially simulation
+    // for resource-heavy contracts) can be slower than ordinary Horizon calls.
+    this.client = new ApiClient(config, config.sorobanRpcUrl, config.timeout.soroban);
     this.logger = new Logger(config.logging.level, 'SorobanRpcClient');
   }
 

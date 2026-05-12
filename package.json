@@ -21,6 +21,7 @@
   "module": "dist/esm/index.js",
   "browser": "dist/umd/wirex-sdk.umd.js",
   "types": "dist/types/index.d.ts",
+  "sideEffects": false,
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
@@ -48,6 +49,8 @@
     "typecheck": "tsc --noEmit",
     "docs": "typedoc",
     "clean": "rm -rf dist coverage docs/api",
+    "size": "node scripts/bundle-size.js",
+    "size:check": "node scripts/bundle-size.js --check",
     "prepublishOnly": "pnpm run clean && pnpm run build"
   },
   "dependencies": {

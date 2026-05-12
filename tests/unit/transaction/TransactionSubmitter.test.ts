@@ -75,7 +75,9 @@ describe('TransactionSubmitter', () => {
     expect(mockSubmitTransaction).toHaveBeenCalledTimes(1);
   });
 
-  it('should retry on tx_bad_seq error', async () => {
+  it('should NOT retry on tx_bad_seq (3.1.7 — deterministic error)', async () => {
+    // tx_bad_seq is deterministic: re-submitting the same signed XDR will
+    // always fail with the same code. Caller must rebuild with fresh sequence.
     const badSeqError = {
       response: {
         data: {
@@ -86,15 +88,7 @@ describe('TransactionSubmitter', () => {
       },
     };
 
-    mockSubmitTransaction
-      .mockRejectedValueOnce(badSeqError)
-      .mockResolvedValueOnce({
-        hash: 'tx_hash_retry',
-        ledger: 43,
-        successful: true,
-        result_xdr: 'resultXdr',
-        envelope_xdr: 'envelopeXdr',
-      });
+    mockSubmitTransaction.mockRejectedValue(badSeqError);
 
     const retryConfig = new ConfigManager({
       network: 'testnet',
@@ -113,13 +107,11 @@ describe('TransactionSubmitter', () => {
       .build();
     tx.sign(keypair);
 
-    const result = await submitter.submit(tx.toXDR());
-
-    expect(result.hash).toBe('tx_hash_retry');
-    expect(mockSubmitTransaction).toHaveBeenCalledTimes(2);
+    await expect(submitter.submit(tx.toXDR())).rejects.toThrow(StellarError);
+    expect(mockSubmitTransaction).toHaveBeenCalledTimes(1);
   });
 
-  it('should retry on tx_too_late error', async () => {
+  it('should NOT retry on tx_too_late (3.1.7 — deterministic error)', async () => {
     const tooLateError = {
       response: {
         data: {
@@ -130,15 +122,7 @@ describe('TransactionSubmitter', () => {
       },
     };
 
-    mockSubmitTransaction
-      .mockRejectedValueOnce(tooLateError)
-      .mockResolvedValueOnce({
-        hash: 'tx_hash_late',
-        ledger: 44,
-        successful: true,
-        result_xdr: 'r',
-        envelope_xdr: 'e',
-      });
+    mockSubmitTransaction.mockRejectedValue(tooLateError);
 
     const retryConfig = new ConfigManager({
       network: 'testnet',
@@ -157,9 +141,8 @@ describe('TransactionSubmitter', () => {
       .build();
     tx.sign(keypair);
 
-    const result = await submitter.submit(tx.toXDR());
-    expect(result.hash).toBe('tx_hash_late');
-    expect(mockSubmitTransaction).toHaveBeenCalledTimes(2);
+    await expect(submitter.submit(tx.toXDR())).rejects.toThrow(StellarError);
+    expect(mockSubmitTransaction).toHaveBeenCalledTimes(1);
   });
 
   it('should NOT retry on non-retryable errors', async () => {
@@ -197,18 +180,21 @@ describe('TransactionSubmitter', () => {
     expect(mockSubmitTransaction).toHaveBeenCalledTimes(1);
   });
 
-  it('should throw StellarError after exhausting retries', async () => {
-    const badSeqError = {
-      response: {
-        data: {
-          extras: {
-            result_codes: { transaction: 'tx_bad_seq' },
-          },
-        },
-      },
+  it('should throw StellarError after exhausting retries on transient errors', async () => {
+    // 503 is transient (retryable). After maxAttempts, throws.
+    const serverError = {
+      response: { status: 503, data: { detail: 'Service Unavailable' } },
     };
 
-    mockSubmitTransaction.mockRejectedValue(badSeqError);
+    mockSubmitTransaction.mockRejectedValue(serverError);
+
+    // Mock lookup to never find the tx (always 404)
+    (Horizon.Server as unknown as jest.Mock).mockImplementation(() => ({
+      submitTransaction: mockSubmitTransaction,
+      transactions: () => ({
+        transaction: () => ({ call: jest.fn().mockRejectedValue(new Error('404')) }),
+      }),
+    }));
 
     const retryConfig = new ConfigManager({
       network: 'testnet',
@@ -229,6 +215,54 @@ describe('TransactionSubmitter', () => {
 
     await expect(submitter.submit(tx.toXDR())).rejects.toThrow(StellarError);
     expect(mockSubmitTransaction).toHaveBeenCalledTimes(2);
+  });
+
+  it('should return existing tx if already confirmed on retry (3.1.7 idempotency)', async () => {
+    // First attempt fails transiently. Before the second attempt, the submitter
+    // checks if the tx already landed — if so, return it without re-submitting.
+    const serverError = {
+      response: { status: 503, data: { detail: 'Service Unavailable' } },
+    };
+    mockSubmitTransaction.mockRejectedValueOnce(serverError);
+
+    const retryConfig = new ConfigManager({
+      network: 'testnet',
+      retry: { maxAttempts: 3, backoffMultiplier: 1 },
+    }).getConfig();
+
+    const submitter = new TransactionSubmitter(retryConfig);
+    const keypair = Keypair.random();
+    const account = new Account(keypair.publicKey(), '100');
+    const tx = new StellarTxBuilder(account, {
+      fee: '100',
+      networkPassphrase: Networks.TESTNET,
+    })
+      .addOperation(Operation.manageData({ name: 'test', value: 'val' }))
+      .setTimeout(30)
+      .build();
+    tx.sign(keypair);
+
+    const expectedHash = tx.hash().toString('hex');
+    (Horizon.Server as unknown as jest.Mock).mockImplementation(() => ({
+      submitTransaction: mockSubmitTransaction,
+      transactions: () => ({
+        transaction: () => ({
+          call: jest.fn().mockResolvedValue({
+            hash: expectedHash,
+            ledger_attr: 99,
+            successful: true,
+            result_xdr: 'r',
+            envelope_xdr: 'e',
+          }),
+        }),
+      }),
+    }));
+
+    const result = await submitter.submit(tx.toXDR());
+    expect(result.hash).toBe(expectedHash);
+    expect(result.ledger).toBe(99);
+    // Idempotency check short-circuits the second submission attempt
+    expect(mockSubmitTransaction).toHaveBeenCalledTimes(1);
   });
 
   it('should normalize unknown errors to StellarError', async () => {
@@ -259,6 +293,14 @@ describe('TransactionSubmitter', () => {
         result_xdr: 'r',
         envelope_xdr: 'e',
       });
+
+    // Mock lookup to return 404 so retry actually executes
+    (Horizon.Server as unknown as jest.Mock).mockImplementation(() => ({
+      submitTransaction: mockSubmitTransaction,
+      transactions: () => ({
+        transaction: () => ({ call: jest.fn().mockRejectedValue(new Error('404')) }),
+      }),
+    }));
 
     const retryConfig = new ConfigManager({
       network: 'testnet',
