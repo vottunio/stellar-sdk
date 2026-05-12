@@ -237,93 +237,93 @@ interface WirexSDKConfig {
 
 ## Tranche 2 — Testnet (Weeks 6-11) — $43,200
 
-### Phase 2.1: Smart Contract Interaction Module — Soroban (Weeks 6-7)
+### Phase 2.1: Smart Contract Interaction Module — Soroban (Weeks 6-7) ✅ COMPLETED
 
-**Files:** `src/stellar/SorobanService.ts`
+**Files:** `src/stellar/SorobanService.ts`, `src/types/stellar.types.ts`
 
-| # | Task | API | Stellar SDK Usage |
-|---|------|-----|-------------------|
-| 2.1.1 | Soroban client init | Internal — connects to Soroban RPC | `new SorobanRpc.Server(rpcUrl)` |
-| 2.1.2 | Invoke contract | `sdk.stellar.invokeContract({ contractId, method, args })` | `contract.call(method, ...args)` via `SorobanRpc` |
-| 2.1.3 | Read contract (query) | `sdk.stellar.readContract({ contractId, method, args })` | `server.simulateTransaction()` — read-only, no submit |
-| 2.1.4 | ScVal encoding | `sdk.stellar.nativeToScVal(value, type)` | `nativeToScVal()` — convert JS values to Soroban types |
-| 2.1.5 | ScVal decoding | `sdk.stellar.scValToNative(scVal)` | `scValToNative()` — convert Soroban results to JS |
-| 2.1.6 | Contract instance | `sdk.stellar.getContract(contractId): Contract` | `new Contract(contractId)` |
-| 2.1.7 | Prepare transaction | Internal — simulate before submit | `server.prepareTransaction(tx)` — adds resource footprint |
-| 2.1.8 | Error normalization | Soroban errors → `StellarError` | Map simulation failures, invoke errors to typed codes |
-| 2.1.9 | Unit tests | - | Encoding/decoding, error mapping |
-| 2.1.10 | Integration tests | - | Invoke token contract on testnet |
+| # | Task | API | Stellar SDK Usage | Status |
+|---|------|-----|-------------------|--------|
+| 2.1.1 | Soroban client init | Internal — connects to Soroban RPC | `new SorobanRpc.Server(rpcUrl)` | ✅ Done |
+| 2.1.2 | Invoke contract | `sdk.soroban.invokeContract({ contractId, method, args }, wallet)` | `contract.call(method, ...args)` via `SorobanRpc` | ✅ Done |
+| 2.1.3 | Read contract (query) | `sdk.soroban.readContract({ contractId, method, args })` | `server.simulateTransaction()` — read-only, no submit | ✅ Done |
+| 2.1.4 | ScVal encoding | `sdk.soroban.nativeToScVal(value, type)` | `nativeToScVal()` — convert JS values to Soroban types | ✅ Done |
+| 2.1.5 | ScVal decoding | `sdk.soroban.scValToNative(scVal)` | `scValToNative()` — convert Soroban results to JS | ✅ Done |
+| 2.1.6 | Contract instance | `sdk.soroban.getContract(contractId): Contract` | `new Contract(contractId)` | ✅ Done |
+| 2.1.7 | Prepare transaction | Internal — simulate before submit | `server.prepareTransaction(tx)` — adds resource footprint | ✅ Done |
+| 2.1.8 | Error normalization | Soroban errors → `StellarError` | Map simulation failures, invoke errors to typed `SorobanErrorCode` | ✅ Done |
+| 2.1.9 | Unit tests | - | 31 tests: encoding/decoding, error mapping, invoke, read, prepare, validation | ✅ Done |
+| 2.1.10 | Integration tests | - | Invoke token contract on testnet (native XLM SAC: CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC) | ✅ Done |
 
-### Phase 2.2: Stellar Blockchain Interaction — Extended (Week 7-8)
+### Phase 2.2: Stellar Blockchain Interaction — Extended (Week 7-8) ✅ COMPLETED
 
 **Goal:** High-level operation helpers that build, sign, and submit transactions. Query methods (getBalances, getAccount) are in Module 4 (API Client); this module uses them internally.
 
-**Files:** `src/stellar/AccountService.ts`, `AssetService.ts`, `PaymentService.ts`
+**Files:** `src/stellar/AccountService.ts`, `AssetService.ts`, `PaymentService.ts`, `StellarClient.ts`, `TransactionHelper.ts`
 
-| # | Task | API | Stellar SDK Usage |
-|---|------|-----|-------------------|
-| 2.2.1 | Account exists check | `sdk.stellar.accountExists(address): boolean` | Uses `sdk.api.horizon.getAccount()` — catch 404 |
-| 2.2.2 | Fund test account | `sdk.stellar.fundTestAccount(address)` | `fetch(https://friendbot.stellar.org?addr=...)` |
-| 2.2.3 | Send payment | `sdk.stellar.sendPayment({ from, to, asset, amount })` | Builder shortcut: `Operation.payment()` + sign + submit |
-| 2.2.4 | Create account | `sdk.stellar.createAccount({ source, destination, startingBalance })` | `Operation.createAccount()` |
-| 2.2.5 | Change trust | `sdk.stellar.changeTrust({ asset, limit? })` | `Operation.changeTrust()` |
-| 2.2.6 | Path payment strict send | `sdk.stellar.pathPaymentStrictSend({...})` | `Operation.pathPaymentStrictSend()` |
-| 2.2.7 | Path payment strict receive | `sdk.stellar.pathPaymentStrictReceive({...})` | `Operation.pathPaymentStrictReceive()` |
-| 2.2.8 | Claimable balance create | `sdk.stellar.createClaimableBalance({...})` | `Operation.createClaimableBalance()` |
-| 2.2.9 | Claimable balance claim | `sdk.stellar.claimClaimableBalance({ balanceId })` | `Operation.claimClaimableBalance()` |
-| 2.2.10 | Sponsored reserves | `sdk.stellar.beginSponsoring()`, `endSponsoring()` | `Operation.beginSponsoringFutureReserves()` / `end...()` |
-| 2.2.11 | Manage data | `sdk.stellar.manageData({ name, value })` | `Operation.manageData()` |
-| 2.2.12 | Asset class | `sdk.stellar.Asset.native()`, `new Asset(code, issuer)` | Wraps `StellarSdk.Asset` |
-| 2.2.13 | Unit tests | - | All operations, edge cases |
-| 2.2.14 | Integration tests | - | Payments, trustlines on testnet |
+| # | Task | API | Stellar SDK Usage | Status |
+|---|------|-----|-------------------|--------|
+| 2.2.1 | Account exists check | `sdk.stellar.accountExists(address): boolean` | `server.loadAccount()` — catch 404 | ✅ Done |
+| 2.2.2 | Fund test account | `sdk.stellar.fundTestAccount(address)` | `fetch(https://friendbot.stellar.org?addr=...)` | ✅ Done |
+| 2.2.3 | Send payment | `sdk.stellar.sendPayment({ sourceAccount, destination, asset, amount })` | Builder shortcut: `Operation.payment()` + sign + submit | ✅ Done |
+| 2.2.4 | Create account | `sdk.stellar.createAccount({ sourceAccount, destination, startingBalance })` | `Operation.createAccount()` | ✅ Done |
+| 2.2.5 | Change trust | `sdk.stellar.changeTrust({ sourceAccount, asset, limit? })` | `Operation.changeTrust()` | ✅ Done |
+| 2.2.6 | Path payment strict send | `sdk.stellar.pathPaymentStrictSend({...})` | `Operation.pathPaymentStrictSend()` | ✅ Done |
+| 2.2.7 | Path payment strict receive | `sdk.stellar.pathPaymentStrictReceive({...})` | `Operation.pathPaymentStrictReceive()` | ✅ Done |
+| 2.2.8 | Claimable balance create | `sdk.stellar.createClaimableBalance({...})` | `Operation.createClaimableBalance()` | ✅ Done |
+| 2.2.9 | Claimable balance claim | `sdk.stellar.claimClaimableBalance({ balanceId })` | `Operation.claimClaimableBalance()` | ✅ Done |
+| 2.2.10 | Sponsored reserves | `sdk.stellar.sponsoredOperation(params, ops, wallet)` | `Operation.beginSponsoringFutureReserves()` / `end...()` | ✅ Done |
+| 2.2.11 | Manage data | `sdk.stellar.manageData({ sourceAccount, name, value })` | `Operation.manageData()` | ✅ Done |
+| 2.2.12 | Asset class | `sdk.stellar.Asset.native()`, `.custom(code, issuer)` | Wraps `StellarSdk.Asset` | ✅ Done |
+| 2.2.13 | Unit tests | - | 45 tests: all operations, edge cases, validation | ✅ Done |
+| 2.2.14 | Integration tests | - | Payments, trustlines, manage data, account creation on testnet (15 tests) | ✅ Done |
 
-### Phase 2.3: API Client Module (Weeks 8-9)
+### Phase 2.3: API Client Module (Weeks 8-9) ✅ COMPLETED
 
 **Goal:** Unified client for Stellar network APIs and external services, with standardized request/response and error handling models.
 
-**Files:** `src/api/`
+**Files:** `src/api/ApiClient.ts`, `HorizonClient.ts`, `SorobanRpcClient.ts`, `ExternalClientFactory.ts`, `ResponseMapper.ts`, `ErrorMapper.ts`
 
-| # | Task | API | Details |
-|---|------|-----|---------|
-| 2.3.1 | Base HTTP client | `ApiClient` | Axios instance with interceptors, base URL config, error mapping, retry logic |
-| 2.3.2 | Horizon REST wrapper — accounts | `sdk.api.horizon.getAccount(address)` | `GET {horizonUrl}/accounts/{address}` — balances, signers, data, thresholds, sequence |
-| 2.3.3 | Horizon REST wrapper — transactions | `sdk.api.horizon.getTransactions({ account?, cursor?, limit?, order? })` | `GET {horizonUrl}/transactions` or `/accounts/{id}/transactions` — paginated with cursor |
-| 2.3.4 | Horizon REST wrapper — single tx | `sdk.api.horizon.getTransaction(hash)` | `GET {horizonUrl}/transactions/{hash}` — full tx details + operations |
-| 2.3.5 | Horizon REST wrapper — operations | `sdk.api.horizon.getOperations({ account?, tx?, cursor?, limit? })` | `GET {horizonUrl}/operations` — filter by account or transaction |
-| 2.3.6 | Horizon REST wrapper — payments | `sdk.api.horizon.getPayments({ account?, cursor?, limit? })` | `GET {horizonUrl}/payments` — payment operations only |
-| 2.3.7 | Horizon REST wrapper — effects | `sdk.api.horizon.getEffects({ account?, cursor?, limit? })` | `GET {horizonUrl}/effects` — account effects |
-| 2.3.8 | Horizon REST wrapper — ledgers | `sdk.api.horizon.getLedger(sequence?)` | `GET {horizonUrl}/ledgers/{sequence}` — ledger info |
-| 2.3.9 | Horizon REST wrapper — assets | `sdk.api.horizon.getAssets({ code?, issuer? })` | `GET {horizonUrl}/assets` — asset discovery |
-| 2.3.10 | Horizon REST wrapper — order book | `sdk.api.horizon.getOrderBook({ selling, buying })` | `GET {horizonUrl}/order_book` — current offers |
-| 2.3.11 | Horizon REST wrapper — trade aggregations | `sdk.api.horizon.getTradeAggregations({ base, counter, resolution })` | `GET {horizonUrl}/trade_aggregations` — OHLC data |
-| 2.3.12 | Horizon REST wrapper — fee stats | `sdk.api.horizon.getFeeStats()` | `GET {horizonUrl}/fee_stats` — network fee percentiles |
-| 2.3.13 | Soroban RPC wrapper — getHealth | `sdk.api.soroban.getHealth()` | `POST {sorobanRpcUrl}` method `getHealth` — node status |
-| 2.3.14 | Soroban RPC wrapper — getTransaction | `sdk.api.soroban.getTransaction(hash)` | `POST {sorobanRpcUrl}` method `getTransaction` — tx status + result |
-| 2.3.15 | Soroban RPC wrapper — getEvents | `sdk.api.soroban.getEvents({ startLedger, filters })` | `POST {sorobanRpcUrl}` method `getEvents` — contract events |
-| 2.3.16 | Soroban RPC wrapper — getLedgerEntries | `sdk.api.soroban.getLedgerEntries(keys)` | `POST {sorobanRpcUrl}` method `getLedgerEntries` — read contract/account state |
-| 2.3.17 | Soroban RPC wrapper — getNetwork | `sdk.api.soroban.getNetwork()` | `POST {sorobanRpcUrl}` method `getNetwork` — network passphrase + protocol version |
-| 2.3.18 | Response standardization | All responses → `ApiResponse<T>` | Unified `{ data, pagination?, raw }` wrapper across Horizon + Soroban |
-| 2.3.19 | Error standardization | All errors → `ApiError` | Map Horizon HTTP errors + Soroban RPC errors to typed `ApiError` with codes |
-| 2.3.20 | Extensible external client | `sdk.api.external(baseUrl, options?)` | Factory method for partners to create type-safe clients for their own backend APIs |
-| 2.3.21 | Unit tests | - | Mock Horizon/Soroban responses, test pagination, error mapping, retry logic |
+| # | Task | API | Details | Status |
+|---|------|-----|---------|--------|
+| 2.3.1 | Base HTTP client | `ApiClient` | Axios instance with interceptors, base URL config, error mapping, retry logic | ✅ Done |
+| 2.3.2 | Horizon REST wrapper — accounts | `sdk.api.horizon.getAccount(address)` | `GET {horizonUrl}/accounts/{address}` — balances, signers, data, thresholds, sequence | ✅ Done |
+| 2.3.3 | Horizon REST wrapper — transactions | `sdk.api.horizon.getTransactions({ account?, cursor?, limit?, order? })` | `GET {horizonUrl}/transactions` or `/accounts/{id}/transactions` — paginated with cursor | ✅ Done |
+| 2.3.4 | Horizon REST wrapper — single tx | `sdk.api.horizon.getTransaction(hash)` | `GET {horizonUrl}/transactions/{hash}` — full tx details + operations | ✅ Done |
+| 2.3.5 | Horizon REST wrapper — operations | `sdk.api.horizon.getOperations({ account?, tx?, cursor?, limit? })` | `GET {horizonUrl}/operations` — filter by account or transaction | ✅ Done |
+| 2.3.6 | Horizon REST wrapper — payments | `sdk.api.horizon.getPayments({ account?, cursor?, limit? })` | `GET {horizonUrl}/payments` — payment operations only | ✅ Done |
+| 2.3.7 | Horizon REST wrapper — effects | `sdk.api.horizon.getEffects({ account?, cursor?, limit? })` | `GET {horizonUrl}/effects` — account effects | ✅ Done |
+| 2.3.8 | Horizon REST wrapper — ledgers | `sdk.api.horizon.getLedger(sequence?)` | `GET {horizonUrl}/ledgers/{sequence}` — ledger info | ✅ Done |
+| 2.3.9 | Horizon REST wrapper — assets | `sdk.api.horizon.getAssets({ code?, issuer? })` | `GET {horizonUrl}/assets` — asset discovery | ✅ Done |
+| 2.3.10 | Horizon REST wrapper — order book | `sdk.api.horizon.getOrderBook({ selling, buying })` | `GET {horizonUrl}/order_book` — current offers | ✅ Done |
+| 2.3.11 | Horizon REST wrapper — trade aggregations | `sdk.api.horizon.getTradeAggregations({ base, counter, resolution })` | `GET {horizonUrl}/trade_aggregations` — OHLC data | ✅ Done |
+| 2.3.12 | Horizon REST wrapper — fee stats | `sdk.api.horizon.getFeeStats()` | `GET {horizonUrl}/fee_stats` — network fee percentiles | ✅ Done |
+| 2.3.13 | Soroban RPC wrapper — getHealth | `sdk.api.soroban.getHealth()` | `POST {sorobanRpcUrl}` method `getHealth` — node status | ✅ Done |
+| 2.3.14 | Soroban RPC wrapper — getTransaction | `sdk.api.soroban.getTransaction(hash)` | `POST {sorobanRpcUrl}` method `getTransaction` — tx status + result | ✅ Done |
+| 2.3.15 | Soroban RPC wrapper — getEvents | `sdk.api.soroban.getEvents({ startLedger, filters })` | `POST {sorobanRpcUrl}` method `getEvents` — contract events | ✅ Done |
+| 2.3.16 | Soroban RPC wrapper — getLedgerEntries | `sdk.api.soroban.getLedgerEntries(keys)` | `POST {sorobanRpcUrl}` method `getLedgerEntries` — read contract/account state | ✅ Done |
+| 2.3.17 | Soroban RPC wrapper — getNetwork | `sdk.api.soroban.getNetwork()` | `POST {sorobanRpcUrl}` method `getNetwork` — network passphrase + protocol version | ✅ Done |
+| 2.3.18 | Response standardization | All responses → `ApiResponse<T>` | Unified `{ data, pagination?, raw }` wrapper across Horizon + Soroban | ✅ Done |
+| 2.3.19 | Error standardization | All errors → `ApiError` | Map Horizon HTTP errors + Soroban RPC errors to typed `ApiError` with codes | ✅ Done |
+| 2.3.20 | Extensible external client | `sdk.api.external(baseUrl, options?)` | Factory method for partners to create type-safe clients for their own backend APIs | ✅ Done |
+| 2.3.21 | Unit tests | - | 78 tests: Horizon endpoints, Soroban RPC, external client, pagination, error mapping, retry | ✅ Done |
 
-### Phase 2.4: WebSocket & Streaming Module (Weeks 9-10)
+### Phase 2.4: WebSocket & Streaming Module (Weeks 9-10) ✅ COMPLETED
 
-**Files:** `src/websocket/`
+**Files:** `src/websocket/WebSocketClient.ts`, `EventRouter.ts`, `ReconnectionManager.ts`, `src/stellar/StreamingService.ts`
 
-| # | Task | API | Details |
-|---|------|-----|---------|
-| 2.4.1 | WebSocket client | `sdk.websocket` | Connection management, `ws` (Node) / native `WebSocket` (Browser) |
-| 2.4.2 | Connect / disconnect | `ws.connect()`, `ws.disconnect()` | Auth handshake on connect |
-| 2.4.3 | Auto-reconnection | Automatic | Exponential backoff, configurable max retries |
-| 2.4.4 | Heartbeat | Automatic | Ping/pong keep-alive |
-| 2.4.5 | Event subscription | `ws.on(event, handler)` | Type-safe event names + payloads |
-| 2.4.6 | Event filtering | `ws.subscribe({ events, account?, asset? })` | Server-side filter |
-| 2.4.7 | Connection status | `ws.on('connected')`, `ws.on('disconnected')`, `ws.on('error')` | Lifecycle callbacks |
-| 2.4.8 | Horizon SSE streaming | `sdk.stellar.stream.transactions(account)`, `.payments(account)` | `server.transactions().forAccount(addr).stream({ onmessage })` |
-| 2.4.9 | Stream cursor management | Internal | Resume from last cursor on reconnect |
-| 2.4.10 | Unit tests | - | Event routing, reconnection logic |
-| 2.4.11 | Integration tests | - | Stream testnet transactions |
+| # | Task | API | Details | Status |
+|---|------|-----|---------|--------|
+| 2.4.1 | WebSocket client | `sdk.websocket` | Connection management, `ws` (Node) / native `WebSocket` (Browser) | ✅ Done |
+| 2.4.2 | Connect / disconnect | `ws.connect()`, `ws.disconnect()` | Connection lifecycle with cleanup | ✅ Done |
+| 2.4.3 | Auto-reconnection | Automatic | Exponential backoff via ReconnectionManager, configurable max retries, 30s cap | ✅ Done |
+| 2.4.4 | Heartbeat | Automatic | Ping/pong keep-alive every 30s | ✅ Done |
+| 2.4.5 | Event subscription | `ws.on(event, handler)` | Type-safe event names + payloads, returns unsubscribe fn | ✅ Done |
+| 2.4.6 | Event filtering | `ws.subscribe({ events, account?, asset? })` | Client-side filter via EventRouter | ✅ Done |
+| 2.4.7 | Connection status | `ws.on('connected')`, `ws.on('disconnected')`, `ws.on('error')` | Lifecycle callbacks + `getState()`, `isConnected()` | ✅ Done |
+| 2.4.8 | Horizon SSE streaming | `sdk.stellar.stream.transactions(account)`, `.payments(account)`, `.operations(account)`, `.effects(account)`, `.ledgers()` | `server.transactions().forAccount(addr).stream({ onmessage })` | ✅ Done |
+| 2.4.9 | Stream cursor management | `getCursor()`, `setCursor()`, `clearCursors()` | Auto-saves paging_token, resumes from last cursor on reconnect | ✅ Done |
+| 2.4.10 | Unit tests | - | 50 tests: EventRouter, ReconnectionManager, WebSocketClient, StreamingService | ✅ Done |
+| 2.4.11 | Integration tests | - | Stream testnet transactions in real-time + verify cursor persistence | ✅ Done |
 
 **Supported WebSocket events:**
 
@@ -335,25 +335,39 @@ interface WirexSDKConfig {
 | `account.updated` | `{ account, balances, signers }` |
 | `contract.event` | `{ contractId, topic, data, ledger }` |
 
-### Phase 2.5: Wirex Reference Integration — Testnet (Week 10-11)
+### Phase 2.5: Wirex Reference Integration — Testnet (Week 10-11) ✅ COMPLETED
 
 **Files:** `src/reference/WirexPaymentFlow.ts`, `examples/wirex-settlement.ts`
 
+**Wirex BaaS API Credentials (Sandbox — shared, for initial testing):**
+
+| Parameter | Value |
+|-----------|-------|
+| Sandbox API URL | `https://api-baas.wirexapp.tech` |
+| Production API URL | `https://api-baas.wirexapp.com` |
+| `client_id` | `3fCeoWq6FOtKJBZiyorXnxE41Dqp2zKB` |
+| `client_secret` | `6FIY2GEQvdlgUEFHw4Dbii22_wCAqZ37lWV3TEMfTlkxrn8F5IbdgX9TiAvQUEsC` |
+| `partner_id` | `0x00000000000000000000000000000044` |
+| Sandbox helper API | `https://ramc.wirexapp.tech` (test event simulation) |
+| Blockchain (sandbox) | Stellar Testnet (Chain ID: 9223372036854775806) |
+
+> Note: These are shared sandbox credentials from [Wirex docs](https://docs.wirexapp.com/docs/environments#sandbox-test-credentials). Contact Wirex for dedicated company credentials.
+
 | # | Task | API | Details |
 |---|------|-----|---------|
-| 2.5.1 | Settlement flow class | `sdk.reference.createSettlement({ asset, amount, destination })` | Orchestrates: create/load wallet → check trustline → build tx → sign → submit → track confirmation |
-| 2.5.2 | XLM settlement | Example flow | Native XLM payment end-to-end on testnet |
-| 2.5.3 | USDC settlement | Example flow | USDC payment (trustline check → payment → confirm) |
-| 2.5.4 | EURC settlement | Example flow | EURC payment (same pattern as USDC) |
-| 2.5.5 | Non-custodial pattern | Documentation | Client-side signing, no private keys on server |
-| 2.5.6 | Partner integration pattern | Documentation + `examples/partner-integration.ts` | How a partner (e.g. Wirex) connects their backend via `sdk.api.external()` to coordinate off-chain + on-chain flows |
-| 2.5.7 | E2E test | - | Full testnet settlement flow |
-| 2.5.8 | Example + docs | `examples/wirex-settlement.ts` | Reproducible reference implementation |
+| 2.5.1 | Settlement flow class | `sdk.reference.createSettlement({ asset, amount, destination })` | Orchestrates: create/load wallet → check trustline → build tx → sign → submit → track confirmation | ✅ Done |
+| 2.5.2 | XLM settlement | Example flow | Native XLM payment end-to-end on testnet | ✅ Done |
+| 2.5.3 | USDC settlement | Example flow | USDC payment (trustline check → payment → confirm) | ✅ Done |
+| 2.5.4 | EURC settlement | Example flow | EURC payment (same pattern as USDC) | ✅ Done |
+| 2.5.5 | Non-custodial pattern | Documentation | Client-side signing, no private keys on server | ✅ Done |
+| 2.5.6 | Partner integration pattern | Documentation + `examples/partner-integration.ts` | How a partner (e.g. Wirex) connects their backend via `sdk.api.external()` to coordinate off-chain + on-chain flows | ✅ Done |
+| 2.5.7 | E2E test | - | Full testnet settlement flow | ✅ Done |
+| 2.5.8 | Example + docs | `examples/wirex-settlement.ts` | Reproducible reference implementation | ✅ Done |
 
 **Tranche 2 Acceptance Criteria:**
-- [ ] End-to-end testnet payment flows executed via the SDK
-- [ ] Live streaming events demonstrated
-- [ ] Reference integration reproducible following published documentation
+- [x] End-to-end testnet payment flows executed via the SDK (settlement E2E + stellar operations integration tests)
+- [x] Live streaming events demonstrated (streaming integration test)
+- [x] Reference integration reproducible following published documentation (wirex-settlement.ts + partner-integration.ts + non-custodial docs)
 
 ---
 

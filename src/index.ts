@@ -1,10 +1,18 @@
+import { ApiClient } from './api/ApiClient';
+import { ExternalClientFactory, ExternalClientOptions } from './api/ExternalClientFactory';
+import { HorizonClient } from './api/HorizonClient';
+import { SorobanRpcClient } from './api/SorobanRpcClient';
 import { ConfigManager } from './config/ConfigManager';
+import { StellarClient } from './stellar/StellarClient';
+import { SorobanService } from './stellar/SorobanService';
 import { WirexTransactionBuilder } from './transaction/TransactionBuilder';
 import { TransactionTracker } from './transaction/TransactionTracker';
 import { FeeEstimator } from './transaction/FeeEstimator';
 import { WirexSDKConfig, ResolvedConfig, NetworkType } from './types/config.types';
 import { TransactionBuilderOptions } from './types/transaction.types';
 import { WalletManager } from './wallet/WalletManager';
+import { WirexPaymentFlow } from './reference/WirexPaymentFlow';
+import { WebSocketClient } from './websocket/WebSocketClient';
 
 // Re-export all types
 export * from './types';
@@ -20,6 +28,18 @@ export { WalletManager, KeypairWallet, HDWallet, ExternalWallet } from './wallet
 
 // Re-export transaction
 export { WirexTransactionBuilder, TransactionSubmitter, FeeEstimator, TransactionTracker } from './transaction';
+
+// Re-export stellar
+export { StellarClient, AccountService, AssetService, PaymentService, SorobanService, StreamingService, TransactionHelper } from './stellar';
+
+// Re-export api
+export { ApiClient, HorizonClient, SorobanRpcClient, ExternalClientFactory, ResponseMapper, ErrorMapper } from './api';
+
+// Re-export websocket
+export { WebSocketClient, EventRouter, ReconnectionManager } from './websocket';
+
+// Re-export reference
+export { WirexPaymentFlow } from './reference';
 
 /**
  * Main SDK class — entry point for all Wirex Stellar SDK functionality.
@@ -39,6 +59,12 @@ export { WirexTransactionBuilder, TransactionSubmitter, FeeEstimator, Transactio
 export class WirexSDK {
   private readonly configManager: ConfigManager;
   private walletManager: WalletManager | null = null;
+  private sorobanService: SorobanService | null = null;
+  private stellarClient: StellarClient | null = null;
+  private horizonClient: HorizonClient | null = null;
+  private sorobanRpcClient: SorobanRpcClient | null = null;
+  private webSocketClient: WebSocketClient | null = null;
+  private paymentFlow: WirexPaymentFlow | null = null;
 
   constructor(config: WirexSDKConfig) {
     this.configManager = new ConfigManager(config);
@@ -52,7 +78,19 @@ export class WirexSDK {
   /** Hot-switch the active Stellar network. */
   setNetwork(network: NetworkType): void {
     this.configManager.setNetwork(network);
-    this.walletManager = null; // reset so it picks up new config
+    // Reset all service instances so they pick up the new config on next access
+    this.walletManager = null;
+    this.stellarClient = null;
+    this.horizonClient = null;
+    this.sorobanRpcClient = null;
+    this.paymentFlow = null;
+    if (this.webSocketClient) {
+      this.webSocketClient.disconnect();
+      this.webSocketClient = null;
+    }
+    if (this.sorobanService) {
+      this.sorobanService.reconnect(this.configManager.getConfig());
+    }
   }
 
   /** Wallet management — create, import, connect wallets. */
@@ -80,17 +118,55 @@ export class WirexSDK {
     return tracker.waitForConfirmation(hash);
   }
 
-  // --- Module accessors (scaffolded, implemented in later tranches) ---
+  /** Soroban smart contract interaction service. */
+  get soroban(): SorobanService {
+    if (!this.sorobanService) {
+      this.sorobanService = new SorobanService(this.configManager.getConfig());
+    }
+    return this.sorobanService;
+  }
 
-  // Phase 2.1-2.2: Stellar Blockchain Interaction
-  // get stellar(): StellarClient { ... }
+  /** Stellar blockchain interaction — accounts, payments, assets, Soroban. */
+  get stellar(): StellarClient {
+    if (!this.stellarClient) {
+      this.stellarClient = new StellarClient(this.configManager.getConfig());
+    }
+    return this.stellarClient;
+  }
 
-  // Phase 2.3: API Client
-  // get api(): ApiClient { ... }
+  /** API clients for Horizon REST, Soroban RPC, and external partner APIs. */
+  get api(): {
+    horizon: HorizonClient;
+    soroban: SorobanRpcClient;
+    external: (baseUrl: string, options?: ExternalClientOptions) => ApiClient;
+  } {
+    if (!this.horizonClient) {
+      this.horizonClient = new HorizonClient(this.configManager.getConfig());
+    }
+    if (!this.sorobanRpcClient) {
+      this.sorobanRpcClient = new SorobanRpcClient(this.configManager.getConfig());
+    }
+    const factory = new ExternalClientFactory(this.configManager.getConfig());
+    return {
+      horizon: this.horizonClient,
+      soroban: this.sorobanRpcClient,
+      external: (baseUrl: string, options?: ExternalClientOptions) => factory.create(baseUrl, options),
+    };
+  }
 
-  // Phase 2.4: WebSocket & Streaming
-  // get websocket(): WebSocketClient { ... }
+  /** WebSocket client for real-time event streaming. */
+  get websocket(): WebSocketClient {
+    if (!this.webSocketClient) {
+      this.webSocketClient = new WebSocketClient(this.configManager.getConfig());
+    }
+    return this.webSocketClient;
+  }
 
-  // Phase 2.5: Reference Integration
-  // get reference(): WirexPaymentFlow { ... }
+  /** Reference integration — settlement flows (XLM, USDC, EURC). */
+  get reference(): WirexPaymentFlow {
+    if (!this.paymentFlow) {
+      this.paymentFlow = new WirexPaymentFlow(this.configManager.getConfig());
+    }
+    return this.paymentFlow;
+  }
 }
