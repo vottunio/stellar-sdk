@@ -4,6 +4,7 @@ import { derivePath } from 'ed25519-hd-key';
 
 import { WalletError, WalletErrorCode } from '../errors/WalletError';
 import { HDWalletInterface, ManagedWallet } from '../types/wallet.types';
+import { ensureSecureRandom } from '../utils/crypto-polyfill-check';
 
 import { KeypairWallet } from './KeypairWallet';
 
@@ -35,6 +36,7 @@ export class HDWallet implements HDWalletInterface {
 
   /** Generate a new HD wallet with a random 24-word mnemonic. */
   static generate(horizonUrl: string): HDWallet {
+    ensureSecureRandom();
     const mnemonic = bip39.generateMnemonic(256);
     return new HDWallet(mnemonic, horizonUrl);
   }

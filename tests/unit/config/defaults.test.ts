@@ -1,4 +1,9 @@
-import { DEFAULT_LOGGING, DEFAULT_RETRY, DEFAULT_TIMEOUT } from '../../../src/config/defaults';
+import {
+  DEFAULT_LOGGING,
+  DEFAULT_RETRY,
+  DEFAULT_TIMEOUT,
+  getDefaultTimeouts,
+} from '../../../src/config/defaults';
 
 describe('Default Configuration', () => {
   describe('DEFAULT_LOGGING', () => {
@@ -7,7 +12,7 @@ describe('Default Configuration', () => {
     });
   });
 
-  describe('DEFAULT_TIMEOUT', () => {
+  describe('DEFAULT_TIMEOUT (legacy testnet defaults)', () => {
     it('should set horizon timeout to 30 seconds', () => {
       expect(DEFAULT_TIMEOUT.horizon).toBe(30_000);
     });
@@ -25,7 +30,39 @@ describe('Default Configuration', () => {
         horizon: 30_000,
         api: 15_000,
         websocket: 10_000,
+        transactionSeconds: 30,
+        soroban: 30_000,
       });
+    });
+  });
+
+  describe('getDefaultTimeouts (3.1.6 — network-aware)', () => {
+    it('should return tighter timeouts for testnet', () => {
+      expect(getDefaultTimeouts('testnet')).toEqual({
+        horizon: 30_000,
+        api: 15_000,
+        websocket: 10_000,
+        transactionSeconds: 30,
+        soroban: 30_000,
+      });
+    });
+
+    it('should return wider timeouts for mainnet', () => {
+      expect(getDefaultTimeouts('mainnet')).toEqual({
+        horizon: 60_000,
+        api: 30_000,
+        websocket: 15_000,
+        transactionSeconds: 180,
+        soroban: 60_000,
+      });
+    });
+
+    it('should return new objects on each call (no shared mutation)', () => {
+      const a = getDefaultTimeouts('mainnet');
+      const b = getDefaultTimeouts('mainnet');
+      expect(a).not.toBe(b);
+      a.horizon = 999;
+      expect(b.horizon).toBe(60_000);
     });
   });
 

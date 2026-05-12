@@ -12,6 +12,7 @@ const external = [
   'bip39',
   'ed25519-hd-key',
   'tweetnacl',
+  'ws',
 ];
 
 export default defineConfig([
@@ -69,6 +70,12 @@ export default defineConfig([
         'bip39': 'bip39',
         'ed25519-hd-key': 'ed25519HdKey',
         'tweetnacl': 'nacl',
+        // `ws` is a Node-only package; browsers use the native `WebSocket` global.
+        // The UMD build expects the consumer to not need `ws` in a browser context.
+        // If the SDK is loaded in Node via UMD, `ws` must be available as a global
+        // or imported separately — this should rarely happen since Node users
+        // should use the CJS or ESM build.
+        'ws': 'WebSocket',
       },
     },
     external,

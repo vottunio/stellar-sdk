@@ -6,7 +6,7 @@ import {
   WirexSDKConfig,
 } from '../types/config.types';
 
-import { DEFAULT_LOGGING, DEFAULT_RETRY, DEFAULT_TIMEOUT } from './defaults';
+import { DEFAULT_LOGGING, DEFAULT_RETRY, getDefaultTimeouts } from './defaults';
 import { Logger } from './Logger';
 import { NETWORK_PRESETS } from './networks';
 
@@ -70,7 +70,7 @@ export class ConfigManager {
         ...options.logging,
       },
       timeout: {
-        ...DEFAULT_TIMEOUT,
+        ...getDefaultTimeouts(options.network),
         ...options.timeout,
       },
       retry: {

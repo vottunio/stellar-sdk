@@ -1,6 +1,7 @@
 import WebSocket from 'ws';
 
 import { Logger } from '../config/Logger';
+import { getErrorMessage, truncate } from '../errors/utils';
 import { ResolvedConfig } from '../types/config.types';
 import {
   ConnectionState,
@@ -18,7 +19,16 @@ import { ReconnectionManager } from './ReconnectionManager';
  * Provides connection management with auto-reconnection, heartbeat keep-alive,
  * type-safe event subscription, and server-side event filtering.
  *
- * Uses `ws` in Node.js and native `WebSocket` in browsers.
+ * **Runtime requirements:**
+ * - **Node.js**: depends on the `ws` package (peer-installed automatically).
+ * - **Browser / React Native**: requires bundler aliasing of `ws` to the
+ *   platform's native `WebSocket` global (Vite/webpack typically handle this
+ *   via the `browser` field in `ws`'s package.json). If your bundler does
+ *   not, configure an alias: `'ws': 'isomorphic-ws'` or similar.
+ *
+ * **Browser-friendly alternative:** For Horizon-only streaming (transactions,
+ * payments, effects), prefer `sdk.stellar.stream.*` (SSE-based) which works
+ * natively in every browser and React Native without any polyfill.
  *
  * Accessed via `sdk.websocket`.
  *
@@ -59,7 +69,7 @@ export class WebSocketClient {
   constructor(config: ResolvedConfig) {
     this.config = config;
     this.logger = new Logger(config.logging.level, 'WebSocketClient');
-    this.router = new EventRouter();
+    this.router = new EventRouter(new Logger(config.logging.level, 'EventRouter'));
     this.reconnectionManager = new ReconnectionManager(config.retry, this.logger);
   }
 
@@ -223,16 +233,29 @@ export class WebSocketClient {
   }
 
   private handleMessage(data: WebSocket.Data): void {
+    let raw: string;
     try {
-      const message = JSON.parse(data.toString());
+      raw = data.toString();
+    } catch (error) {
+      this.logger.warn(`Failed to read WebSocket message: ${getErrorMessage(error)}`);
+      return;
+    }
+
+    try {
+      const message = JSON.parse(raw);
       const event = message.event as WebSocketEventName | undefined;
       const payload = message.data ?? message.payload ?? message;
 
       if (event) {
         this.router.dispatch(event, payload);
       }
-    } catch {
-      this.logger.debug('Received non-JSON message');
+    } catch (error) {
+      // Surface JSON parse failures at warn level so protocol issues are visible.
+      // Truncate the raw payload to avoid blowing up logs on huge messages.
+      this.logger.warn(
+        `Received non-JSON WebSocket message: ${getErrorMessage(error)} ` +
+        `(raw: ${truncate(raw, 100)})`,
+      );
     }
   }
 
@@ -252,9 +275,29 @@ export class WebSocketClient {
     if (this.autoReconnect && this.url) {
       const url = this.url;
       const scheduled = this.reconnectionManager.scheduleReconnect(() => {
+        // ReconnectionManager already enforces maxAttempts. We must not
+        // synchronously re-enter handleClose() on failure — that would
+        // trigger an immediate next attempt and bypass the backoff schedule.
+        // Instead, let the WebSocket's own 'close' event drive the next
+        // reconnect via setupPersistentListeners/handleClose.
         this.doConnect(url).catch((error) => {
-          this.logger.error(`Reconnection failed: ${(error as Error).message}`);
-          this.handleClose();
+          this.logger.error(`Reconnection failed: ${getErrorMessage(error)}`);
+          // The connection attempt failed before any 'close' event fires,
+          // so explicitly schedule the next attempt.
+          if (this.autoReconnect && this.state !== 'disconnected') {
+            this.setState('reconnecting');
+            const next = this.reconnectionManager.scheduleReconnect(() => {
+              this.doConnect(url).catch((e) => {
+                this.logger.error(`Reconnection failed: ${getErrorMessage(e)}`);
+              });
+            });
+            if (!next) {
+              this.setState('disconnected');
+              this.router.dispatch('error', {
+                message: 'Max reconnection attempts exhausted',
+              });
+            }
+          }
         });
       });
 
@@ -274,9 +317,16 @@ export class WebSocketClient {
     const interval = 30000; // 30 seconds
 
     this.heartbeatInterval = setInterval(() => {
-      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        this.ws.ping();
-        this.logger.debug('Ping sent');
+      try {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          this.ws.ping();
+          this.logger.debug('Ping sent');
+        }
+      } catch (error) {
+        // ws.ping() can throw in odd states; stop heartbeat to avoid
+        // crashing the interval. The next 'close' event will drive recovery.
+        this.logger.warn(`Heartbeat ping failed: ${getErrorMessage(error)}`);
+        this.stopHeartbeat();
       }
     }, interval);
   }
