@@ -1,5 +1,6 @@
-import { ApiClient } from './ApiClient';
 import { ResolvedConfig } from '../types/config.types';
+
+import { ApiClient } from './ApiClient';
 
 /**
  * Options for creating an external API client.

@@ -1,5 +1,3 @@
-import { Horizon } from '@stellar/stellar-sdk';
-
 import { ConfigManager } from '../../../src/config/ConfigManager';
 import { StreamingService } from '../../../src/stellar/StreamingService';
 

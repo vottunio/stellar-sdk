@@ -1,6 +1,6 @@
 import { Logger } from '../config/Logger';
-import { ResolvedConfig } from '../types/config.types';
 import { ApiResponse, PaginationParams } from '../types/api.types';
+import { ResolvedConfig } from '../types/config.types';
 
 import { ApiClient } from './ApiClient';
 import { ResponseMapper, HorizonCollectionResponse } from './ResponseMapper';

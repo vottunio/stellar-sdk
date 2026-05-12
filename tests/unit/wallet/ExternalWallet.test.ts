@@ -1,5 +1,5 @@
-import { ExternalWallet } from '../../../src/wallet/ExternalWallet';
 import { WalletError } from '../../../src/errors/WalletError';
+import { ExternalWallet } from '../../../src/wallet/ExternalWallet';
 
 describe('ExternalWallet', () => {
   const horizonUrl = 'https://horizon-testnet.stellar.org';

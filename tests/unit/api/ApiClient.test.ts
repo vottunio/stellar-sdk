@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { ConfigManager } from '../../../src/config/ConfigManager';
 import { ApiClient } from '../../../src/api/ApiClient';
+import { ConfigManager } from '../../../src/config/ConfigManager';
 import { ApiError } from '../../../src/errors/ApiError';
 import { ApiErrorCode } from '../../../src/types/api.types';
 

@@ -1,12 +1,10 @@
 import {
-  Horizon,
   Keypair,
   Account,
 } from '@stellar/stellar-sdk';
 
 import { ConfigManager } from '../../../src/config/ConfigManager';
 import { AssetService } from '../../../src/stellar/AssetService';
-import { StellarError } from '../../../src/errors/StellarError';
 
 // ─── Mocks ───────────────────────────────────────────────────────────────────
 

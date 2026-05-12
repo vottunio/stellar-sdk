@@ -1,7 +1,7 @@
 import * as bip39 from 'bip39';
 
-import { HDWallet } from '../../../src/wallet/HDWallet';
 import { WalletError } from '../../../src/errors/WalletError';
+import { HDWallet } from '../../../src/wallet/HDWallet';
 
 describe('HDWallet', () => {
   const horizonUrl = 'https://horizon-testnet.stellar.org';
