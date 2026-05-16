@@ -10,7 +10,6 @@ import { Keypair } from '@stellar/stellar-sdk';
 
 import { WirexSDK } from '../../src';
 import { KeypairWallet } from '../../src/wallet/KeypairWallet';
-import { TransactionTracker } from '../../src/transaction/TransactionTracker';
 
 // Fund a testnet account via Friendbot
 async function fundTestAccount(publicKey: string): Promise<void> {

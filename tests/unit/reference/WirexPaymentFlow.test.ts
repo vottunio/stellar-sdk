@@ -1,9 +1,9 @@
-import { WirexPaymentFlow } from '../../../src/reference/WirexPaymentFlow';
 import { ConfigManager } from '../../../src/config/ConfigManager';
+import { WirexPaymentFlow } from '../../../src/reference/WirexPaymentFlow';
 import { ResolvedConfig } from '../../../src/types/config.types';
-import { Wallet, Balance } from '../../../src/types/wallet.types';
-import { TransactionResult } from '../../../src/types/transaction.types';
 import { SettlementParams } from '../../../src/types/reference.types';
+import { TransactionResult } from '../../../src/types/transaction.types';
+import { Wallet } from '../../../src/types/wallet.types';
 
 // ─── Mock StellarClient ────────────────────────────────────────────────────
 

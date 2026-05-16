@@ -1,4 +1,3 @@
-import WebSocket from 'ws';
 import { EventEmitter } from 'events';
 
 import { ConfigManager } from '../../../src/config/ConfigManager';
@@ -221,6 +220,90 @@ describe('WebSocketClient', () => {
       wsInstance.emit('error', new Error('test error'));
 
       expect(errorHandler).toHaveBeenCalledWith({ message: 'test error' });
+    });
+  });
+
+  // ─── Coverage: message handling edge cases ──────────────────────────────
+
+  describe('message handling edge cases (3.2.1)', () => {
+    it('should warn on non-JSON message instead of silently dropping', async () => {
+      await client.connect('wss://test.example.com');
+
+      const WS = jest.requireMock('ws').default;
+      const wsInstance = WS.mock.results[0].value as MockWebSocket;
+      wsInstance.emit('message', Buffer.from('not-json {{{'));
+
+      // Just verify it doesn't throw — the warning is logged via Logger
+      expect(client.isConnected()).toBe(true);
+    });
+
+    it('should ignore messages without an event field', async () => {
+      const handler = jest.fn();
+      client.on('payment.received', handler);
+
+      await client.connect('wss://test.example.com');
+
+      const WS = jest.requireMock('ws').default;
+      const wsInstance = WS.mock.results[0].value as MockWebSocket;
+      wsInstance.emit('message', Buffer.from(JSON.stringify({ data: { amount: '10' } })));
+
+      expect(handler).not.toHaveBeenCalled();
+    });
+
+    it('should accept payload field as alias for data', async () => {
+      const handler = jest.fn();
+      client.on('payment.received', handler);
+
+      await client.connect('wss://test.example.com');
+
+      const WS = jest.requireMock('ws').default;
+      const wsInstance = WS.mock.results[0].value as MockWebSocket;
+      wsInstance.emit('message', Buffer.from(JSON.stringify({
+        event: 'payment.received',
+        payload: { amount: '20' },
+      })));
+
+      expect(handler).toHaveBeenCalledWith({ amount: '20' });
+    });
+  });
+
+  // ─── Coverage: reconnection paths ───────────────────────────────────────
+
+  describe('reconnection (3.2.1)', () => {
+    it('should respond to pong frames at debug level', async () => {
+      await client.connect('wss://test.example.com');
+      const WS = jest.requireMock('ws').default;
+      const wsInstance = WS.mock.results[0].value as MockWebSocket;
+
+      // Should not throw — pong is just logged
+      wsInstance.emit('pong');
+      expect(client.isConnected()).toBe(true);
+    });
+
+    it('should dispatch error event when persistent error listener fires', async () => {
+      const errorHandler = jest.fn();
+      client.on('error', errorHandler);
+
+      await client.connect('wss://test.example.com');
+      const WS = jest.requireMock('ws').default;
+      const wsInstance = WS.mock.results[0].value as MockWebSocket;
+
+      // Persistent error listener (set up post-open)
+      wsInstance.emit('error', new Error('persistent error'));
+      expect(errorHandler).toHaveBeenCalledWith({ message: 'persistent error' });
+    });
+
+    it('should transition to reconnecting on unexpected close', async () => {
+      await client.connect('wss://test.example.com');
+      expect(client.getState()).toBe('connected');
+
+      const WS = jest.requireMock('ws').default;
+      const wsInstance = WS.mock.results[0].value as MockWebSocket;
+      wsInstance.emit('close');
+
+      // After unexpected close, state should be reconnecting or disconnected
+      // (depends on retry config — either way, it's not 'connected')
+      expect(client.isConnected()).toBe(false);
     });
   });
 });

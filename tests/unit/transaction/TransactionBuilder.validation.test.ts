@@ -8,7 +8,6 @@ describe('WirexTransactionBuilder — Input Validation (3.1.5)', () => {
   const config = new ConfigManager({ network: 'testnet' }).getConfig();
   const validSource = Keypair.random().publicKey();
   const validDest = Keypair.random().publicKey();
-  const validIssuer = Keypair.random().publicKey();
 
   describe('addPayment validation', () => {
     it('should throw on invalid destination address', () => {

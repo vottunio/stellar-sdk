@@ -1,8 +1,8 @@
 import { Horizon, Keypair, Account, TransactionBuilder as StellarTxBuilder, Networks, Operation } from '@stellar/stellar-sdk';
 
 import { ConfigManager } from '../../../src/config/ConfigManager';
-import { TransactionSubmitter } from '../../../src/transaction/TransactionSubmitter';
 import { StellarError } from '../../../src/errors/StellarError';
+import { TransactionSubmitter } from '../../../src/transaction/TransactionSubmitter';
 
 jest.mock('@stellar/stellar-sdk', () => {
   const actual = jest.requireActual('@stellar/stellar-sdk');

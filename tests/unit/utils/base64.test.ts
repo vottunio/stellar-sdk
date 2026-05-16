@@ -64,36 +64,99 @@ describe('base64 helpers (browser/RN compatibility)', () => {
     });
   });
 
-  describe('manual fallback (when Buffer/btoa unavailable)', () => {
-    // Save references so we can restore after each test
+  describe('browser path (btoa/atob, no Buffer)', () => {
+    let savedBuffer: unknown;
+
+    beforeEach(() => {
+      const g = globalThis as Record<string, unknown>;
+      savedBuffer = g.Buffer;
+      // Hide Buffer to force the browser/atob path
+      delete g.Buffer;
+      // Provide btoa/atob if missing (Node 16 doesn't have them globally)
+      if (typeof g.btoa !== 'function') {
+        g.btoa = (s: string) => Buffer.from(s, 'binary').toString('base64');
+      }
+      if (typeof g.atob !== 'function') {
+        g.atob = (b64: string) => Buffer.from(b64, 'base64').toString('binary');
+      }
+    });
+
+    afterEach(() => {
+      const g = globalThis as Record<string, unknown>;
+      g.Buffer = savedBuffer;
+    });
+
+    it('should round-trip via btoa/atob when Buffer is missing', () => {
+      const bytes = new Uint8Array([1, 2, 3, 4, 5, 250, 251, 252, 253, 254, 255]);
+      const b64 = bytesToBase64(bytes);
+      expect(b64).toBe('AQIDBAX6+/z9/v8=');
+      const back = base64ToBytes(b64);
+      expect(Array.from(back)).toEqual(Array.from(bytes));
+    });
+
+    it('should handle large buffers via chunked btoa', () => {
+      // 64KB — exceeds the 0x8000 chunk size, exercising the chunking loop
+      const bytes = new Uint8Array(64 * 1024);
+      for (let i = 0; i < bytes.length; i++) bytes[i] = i & 0xff;
+      const b64 = bytesToBase64(bytes);
+      const back = base64ToBytes(b64);
+      expect(back.length).toBe(bytes.length);
+      expect(back[0]).toBe(0);
+      expect(back[255]).toBe(255);
+      expect(back[bytes.length - 1]).toBe(bytes[bytes.length - 1]);
+    });
+  });
+
+  describe('manual fallback path (no Buffer, no btoa/atob)', () => {
     let savedBuffer: unknown;
     let savedBtoa: unknown;
     let savedAtob: unknown;
 
-    beforeAll(() => {
+    beforeEach(() => {
       const g = globalThis as Record<string, unknown>;
       savedBuffer = g.Buffer;
       savedBtoa = g.btoa;
       savedAtob = g.atob;
+      delete g.Buffer;
+      delete g.btoa;
+      delete g.atob;
     });
 
-    afterAll(() => {
+    afterEach(() => {
       const g = globalThis as Record<string, unknown>;
       g.Buffer = savedBuffer;
       g.btoa = savedBtoa;
       g.atob = savedAtob;
     });
 
-    it('should round-trip via manual fallback', () => {
-      // Note: the module caches its capability checks at import time, so we
-      // can't truly test the manual fallback path post-import in this env.
-      // What we *can* do is verify the manual encode/decode functions produce
-      // identical output to the Buffer path on known vectors.
+    it('should round-trip arbitrary bytes', () => {
       const bytes = new Uint8Array([1, 2, 3, 4, 5, 250, 251, 252, 253, 254, 255]);
       const b64 = bytesToBase64(bytes);
-      // Standard base64 of [1,2,3,4,5,250,251,252,253,254,255]
       expect(b64).toBe('AQIDBAX6+/z9/v8=');
       const back = base64ToBytes(b64);
+      expect(Array.from(back)).toEqual(Array.from(bytes));
+    });
+
+    it('should handle remainder of 1 byte (single == padding)', () => {
+      const bytes = new TextEncoder().encode('M');
+      expect(bytesToBase64(bytes)).toBe('TQ==');
+    });
+
+    it('should handle remainder of 2 bytes (single = padding)', () => {
+      const bytes = new TextEncoder().encode('Ma');
+      expect(bytesToBase64(bytes)).toBe('TWE=');
+    });
+
+    it('should decode strings with whitespace gracefully', () => {
+      // Manual decoder strips non-base64 chars first
+      const bytes = base64ToBytes('TWFu\n');
+      expect(new TextDecoder().decode(bytes)).toBe('Man');
+    });
+
+    it('should round-trip 256 bytes (every byte value 0-255)', () => {
+      const bytes = new Uint8Array(256);
+      for (let i = 0; i < 256; i++) bytes[i] = i;
+      const back = base64ToBytes(bytesToBase64(bytes));
       expect(Array.from(back)).toEqual(Array.from(bytes));
     });
   });
