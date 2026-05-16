@@ -1,6 +1,6 @@
 import { Logger } from '../config/Logger';
-import { ResolvedConfig } from '../types/config.types';
 import { ApiResponse } from '../types/api.types';
+import { ResolvedConfig } from '../types/config.types';
 
 import { ApiClient } from './ApiClient';
 import { ResponseMapper } from './ResponseMapper';

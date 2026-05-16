@@ -6,8 +6,8 @@ import {
   WirexSDKConfig,
 } from '../types/config.types';
 
-import { DEFAULT_LOGGING, DEFAULT_RETRY, getDefaultTimeouts } from './defaults';
 import { Logger } from './Logger';
+import { DEFAULT_LOGGING, DEFAULT_RETRY, getDefaultTimeouts } from './defaults';
 import { NETWORK_PRESETS } from './networks';
 
 const VALID_NETWORKS: NetworkType[] = ['testnet', 'mainnet'];

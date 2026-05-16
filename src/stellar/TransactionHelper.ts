@@ -7,12 +7,12 @@ import {
 
 import { StellarError } from '../errors/StellarError';
 import { getErrorMessage } from '../errors/utils';
+import { TransactionSubmitter } from '../transaction/TransactionSubmitter';
 import { ResolvedConfig } from '../types/config.types';
 import { StellarOperationErrorCode } from '../types/stellar.types';
 import { TransactionResult } from '../types/transaction.types';
 import { Wallet } from '../types/wallet.types';
 
-import { TransactionSubmitter } from '../transaction/TransactionSubmitter';
 
 type StellarOperation = ReturnType<typeof Operation.payment>;
 

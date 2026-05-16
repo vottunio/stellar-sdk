@@ -1,5 +1,6 @@
-import { WirexSDK } from '../../src';
 import { xdr } from '@stellar/stellar-sdk';
+
+import { WirexSDK } from '../../src';
 
 /**
  * ┌─────────────────────────────────────────────────────────────────────────┐

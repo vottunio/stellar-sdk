@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-import { ConfigManager } from '../../../src/config/ConfigManager';
 import { ExternalClientFactory } from '../../../src/api/ExternalClientFactory';
+import { ConfigManager } from '../../../src/config/ConfigManager';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;

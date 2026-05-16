@@ -1,11 +1,9 @@
 import {
   TransactionBuilder as StellarTransactionBuilder,
-  Networks,
   Operation,
   Asset,
   Memo,
   Horizon,
-  Account,
   StrKey,
 } from '@stellar/stellar-sdk';
 
@@ -25,9 +23,9 @@ import {
   TransactionBuilderOptions,
   TransactionResult,
 } from '../types/transaction.types';
-import { FeeEstimator } from './FeeEstimator';
 import { Wallet } from '../types/wallet.types';
 
+import { FeeEstimator } from './FeeEstimator';
 import { TransactionSubmitter } from './TransactionSubmitter';
 
 /**

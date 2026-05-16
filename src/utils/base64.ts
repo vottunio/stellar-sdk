@@ -8,22 +8,31 @@
  *
  * Use these helpers instead of `Buffer.from(...)` directly to keep wallet
  * encryption and other XDR-handling code cross-platform.
+ *
+ * Capability detection happens per call (not at module load) so that tests
+ * can exercise each branch by temporarily hiding globals like `Buffer`.
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const hasBuffer = typeof (globalThis as any).Buffer !== 'undefined';
-const hasBtoa = typeof (globalThis as any).btoa === 'function';
-const hasAtob = typeof (globalThis as any).atob === 'function';
+function hasBuffer(): boolean {
+  return typeof (globalThis as any).Buffer !== 'undefined';
+}
+function hasBtoa(): boolean {
+  return typeof (globalThis as any).btoa === 'function';
+}
+function hasAtob(): boolean {
+  return typeof (globalThis as any).atob === 'function';
+}
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 /** Encode a Uint8Array (or array-like byte buffer) to a base64 string. */
 export function bytesToBase64(bytes: Uint8Array): string {
-  if (hasBuffer) {
+  if (hasBuffer()) {
     return (globalThis as { Buffer: { from(b: Uint8Array): { toString(enc: string): string } } })
       .Buffer.from(bytes)
       .toString('base64');
   }
-  if (hasBtoa) {
+  if (hasBtoa()) {
     // Chunked conversion to avoid stack overflow on large inputs
     let binary = '';
     const chunkSize = 0x8000;
@@ -39,13 +48,13 @@ export function bytesToBase64(bytes: Uint8Array): string {
 
 /** Decode a base64 string to a Uint8Array. */
 export function base64ToBytes(b64: string): Uint8Array {
-  if (hasBuffer) {
+  if (hasBuffer()) {
     const buf = (globalThis as { Buffer: { from(s: string, enc: string): Uint8Array } })
       .Buffer.from(b64, 'base64');
     // Buffer extends Uint8Array; convert to a plain one for consumers
     return new Uint8Array(buf);
   }
-  if (hasAtob) {
+  if (hasAtob()) {
     const binary = (globalThis as { atob(s: string): string }).atob(b64);
     const out = new Uint8Array(binary.length);
     for (let i = 0; i < binary.length; i++) {

@@ -1,5 +1,4 @@
 import { WirexSDK } from '../../src';
-import { Keypair } from '@stellar/stellar-sdk';
 
 /**
  * Integration test for Horizon SSE streaming.
