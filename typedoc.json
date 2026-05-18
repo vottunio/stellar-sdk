@@ -8,7 +8,7 @@
   "excludeInternal": true,
   "includeVersion": true,
   "navigationLinks": {
-    "GitHub": "https://github.com/vottun/wirex-stellar-sdk"
+    "GitHub": "https://github.com/vottunio/stellar-sdk"
   },
   "tsconfig": "tsconfig.json"
 }

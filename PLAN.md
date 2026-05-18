@@ -404,14 +404,14 @@ interface WirexSDKConfig {
 
 ### Phase 3.3: Documentation & Examples (Weeks 14-15)
 
-| # | Task | Details |
-|---|------|---------|
-| 3.3.1 | TypeDoc generation | Full API reference for all public methods |
-| 3.3.2 | Getting Started guide | Install → init → first transaction in 5 minutes |
-| 3.3.3 | Module guides (×7) | One deep-dive doc per module |
-| 3.3.4 | Code examples (10+) | Common use cases: payments, trustlines, Soroban, streaming, cards |
-| 3.3.5 | Error handling guide | Common errors, troubleshooting |
-| 3.3.6 | Migration guide | For users coming from raw `@stellar/stellar-sdk` |
+| # | Task | Details | Status |
+|---|------|---------|--------|
+| 3.3.1 | TypeDoc generation | Full API reference for all public methods | ✅ Done — `pnpm docs` produces 2.3MB site at `docs/api/` (0 errors, 2 minor internal-type warnings) |
+| 3.3.2 | Getting Started guide | Install → init → first transaction in 5 minutes | ✅ Done — `docs/getting-started.md` |
+| 3.3.3 | Module guides (×7) | One deep-dive doc per module | ✅ Done — `docs/modules/` (wallet, transaction, stellar, api, websocket, config, reference + index README) |
+| 3.3.4 | Code examples (10+) | Common use cases: payments, trustlines, Soroban, streaming, cards | ✅ Done — 11 examples total incl. `examples/wirex-baas-full-flow.ts` (Wirex OAuth + on-chain settlement + streaming + Soroban) |
+| 3.3.5 | Error handling guide | Common errors, troubleshooting | |
+| 3.3.6 | Migration guide | For users coming from raw `@stellar/stellar-sdk` | |
 
 ### Phase 3.4: Release & User Testing (Weeks 15-16)
 
