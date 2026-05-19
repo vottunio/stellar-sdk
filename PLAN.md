@@ -410,8 +410,8 @@ interface WirexSDKConfig {
 | 3.3.2 | Getting Started guide | Install → init → first transaction in 5 minutes | ✅ Done — `docs/getting-started.md` |
 | 3.3.3 | Module guides (×7) | One deep-dive doc per module | ✅ Done — `docs/modules/` (wallet, transaction, stellar, api, websocket, config, reference + index README) |
 | 3.3.4 | Code examples (10+) | Common use cases: payments, trustlines, Soroban, streaming, cards | ✅ Done — 11 examples total incl. `examples/wirex-baas-full-flow.ts` (Wirex OAuth + on-chain settlement + streaming + Soroban) |
-| 3.3.5 | Error handling guide | Common errors, troubleshooting | |
-| 3.3.6 | Migration guide | For users coming from raw `@stellar/stellar-sdk` | |
+| 3.3.5 | Error handling guide | Common errors, troubleshooting | ✅ Done — `docs/error-handling.md` (hierarchy, full code reference, recovery patterns, troubleshooting table, custom wrapper template) |
+| 3.3.6 | Migration guide | For users coming from raw `@stellar/stellar-sdk` | ✅ Done — `docs/migration.md` (side-by-side before/after for init/wallet/HD/payments/fees/streaming/Soroban/errors, step-by-step plan, gotcha table) |
 
 ### Phase 3.4: Release & User Testing (Weeks 15-16)
 

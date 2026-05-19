@@ -180,9 +180,10 @@ On mainnet the SDK automatically:
 ## What's Next?
 
 - [Module guides](./modules/) — deep-dive on each SDK module (wallet, transaction, stellar, api, websocket, config, reference)
-- [Code examples](../examples/) — 10+ working examples covering common use cases
+- [Code examples](../examples/) — 12+ working examples covering common use cases
 - [Non-custodial pattern](./non-custodial-pattern.md) — how to use the SDK in client-side / browser flows
-- [Error handling guide](./error-handling.md) — typed errors and recovery strategies (coming in 3.3.5)
+- [Error handling guide](./error-handling.md) — typed errors, recovery patterns, troubleshooting
+- [Migration guide](./migration.md) — coming from raw `@stellar/stellar-sdk`? Read this
 
 ---
 
