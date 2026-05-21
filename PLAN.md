@@ -415,21 +415,23 @@ interface WirexSDKConfig {
 
 ### Phase 3.4: Release & User Testing (Weeks 15-16)
 
-| # | Task | Details |
-|---|------|---------|
-| 3.4.1 | NPM publish setup | `@wirex/stellar-sdk`, scoped package, provenance |
-| 3.4.2 | Semantic versioning | `1.0.0` initial release |
-| 3.4.3 | CDN distribution | UMD build on jsdelivr/unpkg |
-| 3.4.4 | Changelog | `CHANGELOG.md` with all features |
-| 3.4.5 | Professional user testing | External developers test the SDK |
-| 3.4.6 | Feedback incorporation | Fix issues from user testing |
-| 3.4.7 | Final tagged release | `v1.0.0` — mainnet-ready |
-| 3.4.8 | Mainnet transaction proof | Execute real mainnet transactions as acceptance proof |
+| # | Task | Details | Status |
+|---|------|---------|--------|
+| 3.4.1 | NPM publish setup | `@wirex/stellar-sdk`, scoped package, provenance | ✅ Done — `publishConfig.access: public`, `provenance: true`, `files` whitelist, dry-run shows 11-file tarball (186 KB) |
+| 3.4.2 | Semantic versioning | `1.0.0` initial release | ✅ Done — `package.json#version = 1.0.0` |
+| 3.4.3 | CDN distribution | UMD build on jsdelivr/unpkg | ✅ Done — `unpkg` and `jsdelivr` fields point at `dist/umd/wirex-sdk.umd.js` (17 KB gzipped) |
+| 3.4.4 | Changelog | `CHANGELOG.md` with all features | ✅ Done — `CHANGELOG.md` covers full 1.0.0 release notes |
+| 3.4.5 | Professional user testing | External developers test the SDK | ⚠ Needs Puneet — protocol ready: `docs/release/user-testing-protocol.md` |
+| 3.4.6 | Feedback incorporation | Fix issues from user testing | ⚠ Needs 3.4.5 first — workflow ready: `docs/release/feedback-workflow.md` |
+| 3.4.7 | Final tagged release | `v1.0.0` — mainnet-ready | ⚠ Needs Puneet — checklist + dry-run verified: `docs/release/release.md` |
+| 3.4.8 | Mainnet transaction proof | Execute real mainnet transactions as acceptance proof | ✅ Done — tx `9467bf9299178b4b370ce00e3109a363357ce14bc24f73f020d22f35ecf9acdc` confirmed in ledger 62667954 (2026-05-21). Artifacts in `docs/release/mainnet-proof-record.md` |
 
 **Tranche 3 Acceptance Criteria:**
-- [ ] Successful mainnet transactions executed using the SDK
-- [ ] Tagged mainnet SDK release published
-- [ ] Professional user testing completed and documented
+- [x] Successful mainnet transactions executed using the SDK *(proof tx in ledger 62667954, 2026-05-21)*
+- [ ] Tagged mainnet SDK release published *(awaiting `pnpm publish` with `@wirex` scope creds)*
+- [ ] Professional user testing completed and documented *(awaiting 3 external testers)*
+
+**Code-side delivery: 100% complete. SCF gate 1 of 3 cleared.** Remaining SCF gates are `3.4.5` (user testing) and `3.4.7` (npm publish + git tag).
 
 ---
 
