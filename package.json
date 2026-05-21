@@ -1,7 +1,7 @@
 {
   "name": "@wirex/stellar-sdk",
-  "version": "0.1.0",
-  "description": "Modular, ecosystem-reusable SDK for the Stellar blockchain",
+  "version": "1.0.0",
+  "description": "Modular, ecosystem-reusable SDK for the Stellar blockchain — payments, Soroban, streaming, Wirex BaaS integration",
   "author": "Vottun <dev@vottun.com>",
   "license": "MIT",
   "keywords": [
@@ -11,15 +11,27 @@
     "payments",
     "soroban",
     "wirex",
-    "vottun"
+    "vottun",
+    "xlm",
+    "usdc",
+    "horizon",
+    "baas",
+    "typescript",
+    "wallet"
   ],
+  "homepage": "https://github.com/vottunio/stellar-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/vottunio/stellar-sdk/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vottunio/stellar-sdk"
+    "url": "git+https://github.com/vottunio/stellar-sdk.git"
   },
   "main": "dist/cjs/index.cjs",
   "module": "dist/esm/index.js",
   "browser": "dist/umd/wirex-sdk.umd.js",
+  "unpkg": "dist/umd/wirex-sdk.umd.js",
+  "jsdelivr": "dist/umd/wirex-sdk.umd.js",
   "types": "dist/types/index.d.ts",
   "sideEffects": false,
   "exports": {
@@ -32,8 +44,14 @@
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "provenance": true
+  },
   "engines": {
     "node": ">=18.0.0"
   },
