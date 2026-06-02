@@ -77,12 +77,25 @@ export interface AssetSpec {
 }
 
 /**
+ * Fee strategy for dynamic fee escalation based on network congestion.
+ * - `low`: p10 percentile — cheap, may be slow during congestion
+ * - `medium`: p50 percentile — balanced (default)
+ * - `high`: p90 percentile — fast confirmation in moderate congestion
+ * - `aggressive`: p99 percentile — near-guaranteed inclusion even under heavy load
+ */
+export type FeeStrategy = 'low' | 'medium' | 'high' | 'aggressive';
+
+/**
  * Fee estimation result.
  */
 export interface FeeEstimate {
   baseFee: string;
   estimatedFee: string;
   operationCount: number;
+  /** The fee strategy used (if dynamic fee estimation was used). */
+  strategy?: FeeStrategy;
+  /** Network capacity usage at time of estimation (0.0 to 1.0). */
+  capacityUsage?: number;
 }
 
 /**

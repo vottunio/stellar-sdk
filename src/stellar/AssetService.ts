@@ -7,6 +7,7 @@ import {
 
 import { Logger } from '../config/Logger';
 import { StellarError } from '../errors/StellarError';
+import { getErrorMessage } from '../errors/utils';
 import { ResolvedConfig } from '../types/config.types';
 import {
   StellarChangeTrustParams,
@@ -114,7 +115,7 @@ export class AssetService {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Change trust failed: ${(error as Error).message}`,
+        `Change trust failed: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.TRUSTLINE_FAILED,
         { asset: `${params.asset.code}:${params.asset.issuer}` },
       );
@@ -158,7 +159,7 @@ export class AssetService {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Create claimable balance failed: ${(error as Error).message}`,
+        `Create claimable balance failed: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.CLAIMABLE_BALANCE_FAILED,
         { amount: params.amount },
       );
@@ -191,7 +192,7 @@ export class AssetService {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Claim claimable balance failed: ${(error as Error).message}`,
+        `Claim claimable balance failed: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.CLAIMABLE_BALANCE_FAILED,
         { balanceId: params.balanceId },
       );
@@ -239,7 +240,7 @@ export class AssetService {
     } catch (error) {
       if (error instanceof StellarError) throw error;
       throw new StellarError(
-        `Sponsored operation failed: ${(error as Error).message}`,
+        `Sponsored operation failed: ${getErrorMessage(error)}`,
         StellarOperationErrorCode.SPONSORSHIP_FAILED,
         { sponsoredAccount: params.sponsoredAccount },
       );

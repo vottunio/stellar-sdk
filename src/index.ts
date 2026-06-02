@@ -21,7 +21,7 @@ export * from './types';
 export * from './errors';
 
 // Re-export config
-export { ConfigManager, Logger, NETWORK_PRESETS, DEFAULT_LOGGING, DEFAULT_TIMEOUT, DEFAULT_RETRY } from './config';
+export { ConfigManager, Logger, NETWORK_PRESETS, DEFAULT_LOGGING, DEFAULT_TIMEOUT, DEFAULT_RETRY, getDefaultTimeouts } from './config';
 
 // Re-export wallet
 export { WalletManager, KeypairWallet, HDWallet, ExternalWallet } from './wallet';
@@ -32,8 +32,49 @@ export { WirexTransactionBuilder, TransactionSubmitter, FeeEstimator, Transactio
 // Re-export stellar
 export { StellarClient, AccountService, AssetService, PaymentService, SorobanService, StreamingService, TransactionHelper } from './stellar';
 
-// Re-export api
-export { ApiClient, HorizonClient, SorobanRpcClient, ExternalClientFactory, ResponseMapper, ErrorMapper } from './api';
+// Re-export api (classes + Horizon/Soroban response types for TypeDoc visibility)
+export {
+  ApiClient,
+  HorizonClient,
+  SorobanRpcClient,
+  ExternalClientFactory,
+  ResponseMapper,
+  ErrorMapper,
+  RateLimiter,
+} from './api';
+export type {
+  RateLimiterConfig,
+  ExternalClientOptions,
+  HorizonAccount,
+  HorizonBalance,
+  HorizonSigner,
+  HorizonTransaction,
+  HorizonOperation,
+  HorizonPayment,
+  HorizonEffect,
+  HorizonLedger,
+  HorizonAsset,
+  HorizonOrderBook,
+  HorizonOrderBookEntry,
+  HorizonTradeAggregation,
+  HorizonFeeStats,
+  GetTransactionsParams,
+  GetOperationsParams,
+  GetPaymentsParams,
+  GetEffectsParams,
+  GetAssetsParams,
+  GetOrderBookParams,
+  GetTradeAggregationsParams,
+  SorobanHealth,
+  SorobanTransaction,
+  SorobanEvent,
+  SorobanEventsResponse,
+  SorobanLedgerEntry,
+  SorobanLedgerEntriesResponse,
+  SorobanNetwork,
+  SorobanEventFilter,
+  GetEventsParams,
+} from './api';
 
 // Re-export websocket
 export { WebSocketClient, EventRouter, ReconnectionManager } from './websocket';

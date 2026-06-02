@@ -10,6 +10,8 @@ import { ApiError } from '../errors/ApiError';
 import { ApiErrorCode } from '../types/api.types';
 import { ResolvedConfig } from '../types/config.types';
 
+import { RateLimiter } from './RateLimiter';
+
 /**
  * Base HTTP client built on axios. Provides interceptors for logging,
  * automatic retry with exponential backoff, and standardized error mapping.
@@ -26,10 +28,12 @@ export class ApiClient {
   private readonly instance: AxiosInstance;
   private readonly logger: Logger;
   private readonly config: ResolvedConfig;
+  private readonly rateLimiter: RateLimiter;
 
   constructor(config: ResolvedConfig, baseURL: string, timeout?: number) {
     this.config = config;
     this.logger = new Logger(config.logging.level, 'ApiClient');
+    this.rateLimiter = new RateLimiter(undefined, this.logger);
 
     this.instance = axios.create({
       baseURL,
@@ -73,9 +77,17 @@ export class ApiClient {
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
+        // Wait for rate limiter before each attempt
+        await this.rateLimiter.acquire();
         return await this.instance.request<T>(config);
       } catch (error: unknown) {
         lastError = error;
+
+        // Feed Retry-After back to the rate limiter on 429
+        if (axios.isAxiosError(error) && error.response?.status === 429) {
+          const retryAfter = error.response.headers?.['retry-after'] as string | undefined;
+          this.rateLimiter.onRateLimited(retryAfter);
+        }
 
         if (!this.isRetryable(error) || attempt === maxAttempts) {
           break;

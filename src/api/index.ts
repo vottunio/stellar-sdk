@@ -2,8 +2,11 @@ export { ApiClient } from './ApiClient';
 export { HorizonClient } from './HorizonClient';
 export { SorobanRpcClient } from './SorobanRpcClient';
 export { ExternalClientFactory } from './ExternalClientFactory';
+export type { ExternalClientOptions } from './ExternalClientFactory';
 export { ResponseMapper } from './ResponseMapper';
 export { ErrorMapper } from './ErrorMapper';
+export { RateLimiter } from './RateLimiter';
+export type { RateLimiterConfig } from './RateLimiter';
 
 // Re-export Horizon response types
 export type {

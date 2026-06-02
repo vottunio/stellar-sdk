@@ -1,3 +1,5 @@
+import { Logger } from '../config/Logger';
+import { getErrorMessage } from '../errors/utils';
 import {
   WebSocketEventName,
   EventHandler,
@@ -14,6 +16,11 @@ import {
 export class EventRouter {
   private readonly handlers = new Map<WebSocketEventName, Set<EventHandler>>();
   private readonly filters: SubscriptionFilter[] = [];
+  private readonly logger: Logger;
+
+  constructor(logger?: Logger) {
+    this.logger = logger ?? new Logger('none', 'EventRouter');
+  }
 
   /**
    * Register an event handler for a specific event type.
@@ -75,8 +82,12 @@ export class EventRouter {
     for (const handler of handlers) {
       try {
         handler(payload);
-      } catch {
-        // Swallow handler errors to prevent one bad handler from breaking others
+      } catch (error) {
+        // Don't let one bad handler break others, but surface the error
+        // so callers can find bugs in their handlers.
+        this.logger.warn(
+          `Event handler for "${event}" threw: ${getErrorMessage(error)}`,
+        );
       }
     }
   }

@@ -10,6 +10,7 @@ import {
 
 import { Logger } from '../config/Logger';
 import { StellarError } from '../errors/StellarError';
+import { getErrorMessage } from '../errors/utils';
 import { ResolvedConfig } from '../types/config.types';
 import {
   ContractInvocationResult,
@@ -146,10 +147,12 @@ export class SorobanService {
       this.logger.debug(`Transaction sent: ${sendResponse.hash}`);
 
       if (sendResponse.status === 'ERROR') {
+        // Do not surface raw errorResult XDR — it can leak signed envelope data
+        // and operation arguments. Keep only the hash + status for debugging.
         throw new StellarError(
           `Transaction submission failed: ${sendResponse.status}`,
           SorobanErrorCode.TRANSACTION_FAILED,
-          { hash: sendResponse.hash, errorResult: sendResponse.errorResult?.toXDR('base64') },
+          { hash: sendResponse.hash, status: sendResponse.status },
         );
       }
 
@@ -234,9 +237,9 @@ export class SorobanService {
       return nativeToScVal(value, type ? { type } as never : undefined);
     } catch (error) {
       throw new StellarError(
-        `Failed to encode value to ScVal: ${(error as Error).message}`,
+        `Failed to encode value to ScVal: ${getErrorMessage(error)}`,
         SorobanErrorCode.ENCODING_ERROR,
-        { value: String(value), type },
+        { type },
       );
     }
   }
@@ -252,7 +255,7 @@ export class SorobanService {
       return scValToNative(val);
     } catch (error) {
       throw new StellarError(
-        `Failed to decode ScVal: ${(error as Error).message}`,
+        `Failed to decode ScVal: ${getErrorMessage(error)}`,
         SorobanErrorCode.DECODING_ERROR,
         { scValType: val.switch().name },
       );
