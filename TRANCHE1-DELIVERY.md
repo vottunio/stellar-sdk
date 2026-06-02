@@ -2,21 +2,38 @@
 
 ## @wirex/stellar-sdk — SCF #41 Grant (Build Track)
 
-**Date:** 2026-04-07
+**Date:** 2026-04-08
 **Tranche:** 1 of 3 (MVP)
 **Amount:** $28,800
 **Team:** Vottun (Development Partner) / Wirex (Product Owner)
-**Repository:** https://github.com/AtenrevCode/wirexsdk
+**Repository:** https://github.com/vottunio/stellar-sdk
 
 ---
 
 ## 1. Deliverables Summary
 
-| Deliverable | Status | Description |
-|-------------|--------|-------------|
-| D1.1 - Wallet Management Module | Delivered | Account creation, querying, balances (XLM, USDC, EURC), trustlines, non-custodial key handling |
-| D1.2 - Transaction Lifecycle Module | Delivered | Construction, signing, fee handling, submission via Horizon, status tracking |
-| D1.3 - Configuration Module | Delivered | Testnet/mainnet switching, network/endpoint config |
+| Deliverable | Status | Source Code | Tests | Documentation |
+|-------------|--------|-------------|-------|---------------|
+| D1.1 - Wallet Management Module | Delivered | [`src/wallet/`](https://github.com/vottunio/stellar-sdk/tree/master/src/wallet) | [`tests/unit/wallet/`](https://github.com/vottunio/stellar-sdk/tree/master/tests/unit/wallet) | [API Docs: WalletManager](https://github.com/vottunio/stellar-sdk/tree/master/docs/api/classes/WalletManager.html) |
+| D1.2 - Transaction Lifecycle Module | Delivered | [`src/transaction/`](https://github.com/vottunio/stellar-sdk/tree/master/src/transaction) | [`tests/unit/transaction/`](https://github.com/vottunio/stellar-sdk/tree/master/tests/unit/transaction) | [API Docs: TransactionBuilder](https://github.com/vottunio/stellar-sdk/tree/master/docs/api/classes/WirexTransactionBuilder.html) |
+| D1.3 - Configuration Module | Delivered | [`src/config/`](https://github.com/vottunio/stellar-sdk/tree/master/src/config) | [`tests/unit/config/`](https://github.com/vottunio/stellar-sdk/tree/master/tests/unit/config) | [API Docs: ConfigManager](https://github.com/vottunio/stellar-sdk/tree/master/docs/api/classes/ConfigManager.html) |
+
+### What each deliverable covers
+
+**D1.1 – Wallet Management Module (Stellar)**
+- Stellar account creation and querying → `KeypairWallet.create()`, `HDWallet.generate()`
+- Balance retrieval for XLM and issued assets (USDC, EURC) → `wallet.getBalances()`
+- Trustline management → `TransactionBuilder.changeTrust()`
+- Non-custodial key handling abstractions → `KeypairWallet`, `HDWallet`, `ExternalWallet` (Freighter, Lobstr)
+
+**D1.2 – Transaction Lifecycle Module**
+- Transaction construction and client-side signing → `WirexTransactionBuilder` fluent API + `wallet.sign()`
+- Fee handling and submission via Horizon → `FeeEstimator` + `TransactionSubmitter`
+- Transaction status and lifecycle tracking → `TransactionTracker.waitForConfirmation()`
+
+**D1.3 – Configuration Module**
+- Testnet / mainnet environment switching → `ConfigManager.setNetwork()`
+- Network and endpoint configuration → `networks.ts` presets + custom URL overrides
 
 ---
 
