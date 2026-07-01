@@ -93,4 +93,10 @@ pids/
 .turbo/
 .vercel/
 .netlify/
-.claude/*
+.claude/
+
+# Internal / delivery docs (not for public repo)
+Business.md
+PLAN.md
+Integration*-DELIVERY.md
+docs/old/
