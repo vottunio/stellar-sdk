@@ -53,7 +53,7 @@ On **mainnet**, the builder uses `medium` automatically when no fee is specified
 
 ```ts
 // Suggest a strategy based on current network capacity
-import { FeeEstimator } from '@wirex/stellar-sdk';
+import { FeeEstimator } from '@vottun/stellar-sdk';
 const est = new FeeEstimator(sdk.config);
 const { strategy, capacityUsage } = await est.suggestStrategy();
 // e.g. { strategy: 'medium', capacityUsage: 0.42 }
@@ -118,7 +118,7 @@ async function send(amount: string) {
 ## TransactionTracker — Polling for Confirmation
 
 ```ts
-import { TransactionTracker } from '@wirex/stellar-sdk';
+import { TransactionTracker } from '@vottun/stellar-sdk';
 
 const tracker = new TransactionTracker(sdk.config);
 const conf = await tracker.waitForConfirmation(result.hash);

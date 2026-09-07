@@ -87,7 +87,7 @@ export { WirexPaymentFlow } from './reference';
  *
  * @example
  * ```typescript
- * import { WirexSDK } from '@wirex/stellar-sdk';
+ * import { WirexSDK } from '@vottun/stellar-sdk';
  *
  * const sdk = new WirexSDK({ network: 'testnet' });
  * const wallet = sdk.wallet.create();

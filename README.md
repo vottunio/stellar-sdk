@@ -1,4 +1,4 @@
-# @wirex/stellar-sdk
+# @vottun/stellar-sdk
 
 Modular, ecosystem-reusable SDK for the Stellar blockchain. Built by [Vottun](https://vottun.com) for [Wirex](https://wirexapp.com).
 
@@ -18,19 +18,19 @@ Simplifies development of payment-enabled applications and accelerates real-worl
 
 ```bash
 # pnpm (recommended)
-pnpm add @wirex/stellar-sdk
+pnpm add @vottun/stellar-sdk
 
 # npm
-npm install @wirex/stellar-sdk
+npm install @vottun/stellar-sdk
 
 # yarn
-yarn add @wirex/stellar-sdk
+yarn add @vottun/stellar-sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { WirexSDK } from '@wirex/stellar-sdk';
+import { WirexSDK } from '@vottun/stellar-sdk';
 
 // 1. Initialize the SDK
 const sdk = new WirexSDK({ network: 'testnet' });
@@ -249,7 +249,7 @@ pnpm clean             # Remove dist/, coverage/, docs/api/
 All SDK errors extend `StellarError` with typed error codes:
 
 ```typescript
-import { WirexSDK, ConfigError, WalletError, ApiError } from '@wirex/stellar-sdk';
+import { WirexSDK, ConfigError, WalletError, ApiError } from '@vottun/stellar-sdk';
 
 try {
   const sdk = new WirexSDK({ network: 'invalid' as any });

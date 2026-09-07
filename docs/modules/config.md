@@ -59,7 +59,7 @@ Production-tuned per network — mainnet uses wider windows to tolerate congesti
 | `soroban` | 30s | **60s** | Contract simulations can be slow |
 
 ```ts
-import { getDefaultTimeouts } from '@wirex/stellar-sdk';
+import { getDefaultTimeouts } from '@vottun/stellar-sdk';
 const mainnetDefaults = getDefaultTimeouts('mainnet');
 ```
 

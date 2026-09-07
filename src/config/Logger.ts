@@ -16,7 +16,7 @@ export class Logger {
   private level: LogLevel;
   private readonly prefix: string;
 
-  constructor(level: LogLevel, prefix = '@wirex/stellar-sdk') {
+  constructor(level: LogLevel, prefix = '@vottun/stellar-sdk') {
     this.level = level;
     this.prefix = prefix;
   }

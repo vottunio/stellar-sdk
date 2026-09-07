@@ -8,7 +8,7 @@ The Wirex SDK **wraps** `@stellar/stellar-sdk` — it doesn't replace it. Every 
 
 ## Quick Reference
 
-| Task | Raw `@stellar/stellar-sdk` | `@wirex/stellar-sdk` |
+| Task | Raw `@stellar/stellar-sdk` | `@vottun/stellar-sdk` |
 |---|---|---|
 | Initialise | `new Horizon.Server(url)` per service | One `new WirexSDK({ network })` |
 | Generate wallet | `Keypair.random()` | `sdk.wallet.create()` (same keypair, plus `getBalances()`, `exportEncrypted()`) |
@@ -38,7 +38,7 @@ const networkPassphrase = Networks.TESTNET;
 ### After
 
 ```ts
-import { WirexSDK } from '@wirex/stellar-sdk';
+import { WirexSDK } from '@vottun/stellar-sdk';
 
 const sdk = new WirexSDK({ network: 'testnet' });
 // sdk.config.horizonUrl, sdk.config.sorobanRpcUrl, sdk.config.networkPassphrase
@@ -200,7 +200,7 @@ await sdk.transaction(...).setFeeStrategy('high').build();
 await sdk.transaction(...).build();
 
 // Option 3 — inspect current network capacity & let the SDK pick
-import { FeeEstimator } from '@wirex/stellar-sdk';
+import { FeeEstimator } from '@vottun/stellar-sdk';
 const { strategy } = await new FeeEstimator(sdk.config).suggestStrategy();
 await sdk.transaction(...).setFeeStrategy(strategy).build();
 ```
@@ -347,7 +347,7 @@ try {
 ### After
 
 ```ts
-import { ApiError, ApiErrorCode } from '@wirex/stellar-sdk';
+import { ApiError, ApiErrorCode } from '@vottun/stellar-sdk';
 
 try {
   await builder.submit();
@@ -383,7 +383,7 @@ So you can mix and match — use the high-level API for 90% of your code, drop d
 
 ## Step-by-Step Migration Plan
 
-1. **Install** the SDK: `pnpm add @wirex/stellar-sdk` (you can keep `@stellar/stellar-sdk` — it's a peer dep)
+1. **Install** the SDK: `pnpm add @vottun/stellar-sdk` (you can keep `@stellar/stellar-sdk` — it's a peer dep)
 2. **Replace** `new Horizon.Server(...)` with `new WirexSDK({ network })` at app initialization
 3. **Replace** wallet creation/import calls (`Keypair.random()` etc.) with `sdk.wallet.*` — keep all `Keypair.fromSecret(...)` if you have existing flows
 4. **Migrate one payment flow** to the fluent builder; test it works end-to-end

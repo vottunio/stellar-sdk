@@ -1,5 +1,5 @@
 {
-  "name": "@wirex/stellar-sdk",
+  "name": "@vottun/stellar-sdk",
   "version": "1.0.0",
   "description": "Modular, ecosystem-reusable SDK for the Stellar blockchain — payments, Soroban, streaming, Wirex BaaS integration",
   "author": "Vottun <dev@vottun.com>",
@@ -49,8 +49,7 @@
   ],
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org/",
-    "provenance": true
+    "registry": "https://registry.npmjs.org/"
   },
   "engines": {
     "node": ">=18.0.0"

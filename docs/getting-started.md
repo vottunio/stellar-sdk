@@ -1,4 +1,4 @@
-# Getting Started with `@wirex/stellar-sdk`
+# Getting Started with `@vottun/stellar-sdk`
 
 > First Stellar transaction in **5 minutes**, from `npm install` to a confirmed payment on testnet.
 
@@ -17,9 +17,9 @@ No accounts, no API keys, no funded wallets, no manual setup. Everything in this
 ## 1 · Install
 
 ```bash
-pnpm add @wirex/stellar-sdk
+pnpm add @vottun/stellar-sdk
 # or
-npm install @wirex/stellar-sdk
+npm install @vottun/stellar-sdk
 ```
 
 The SDK ships ESM, CJS, and UMD bundles; your bundler will pick the right one automatically. Total gzipped size: **~36 KB**.
@@ -29,7 +29,7 @@ The SDK ships ESM, CJS, and UMD bundles; your bundler will pick the right one au
 ## 2 · Initialize the SDK
 
 ```ts
-import { WirexSDK } from '@wirex/stellar-sdk';
+import { WirexSDK } from '@vottun/stellar-sdk';
 
 const sdk = new WirexSDK({ network: 'testnet' });
 ```

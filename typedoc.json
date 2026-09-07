@@ -2,7 +2,7 @@
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["src/index.ts"],
   "out": "docs/api",
-  "name": "@wirex/stellar-sdk",
+  "name": "@vottun/stellar-sdk",
   "readme": "README.md",
   "excludePrivate": true,
   "excludeInternal": true,

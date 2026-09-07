@@ -309,7 +309,7 @@ Captured automatically by \`scripts/mainnet-proof.ts\` for the grant acceptance 
 
 ## SDK Version
 
-\`@wirex/stellar-sdk@1.0.0\`
+\`@vottun/stellar-sdk@1.0.0\`
 
 ## Sign-off
 

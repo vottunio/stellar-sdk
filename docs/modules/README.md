@@ -1,6 +1,6 @@
 # Module Guides
 
-Deep-dive documentation for each module in `@wirex/stellar-sdk`.
+Deep-dive documentation for each module in `@vottun/stellar-sdk`.
 
 | Module | Surface | Guide |
 |---|---|---|

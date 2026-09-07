@@ -1,6 +1,6 @@
 # Examples
 
-Twelve runnable examples covering common `@wirex/stellar-sdk` use cases. All examples run against Stellar testnet and require no setup beyond `pnpm install`.
+Twelve runnable examples covering common `@vottun/stellar-sdk` use cases. All examples run against Stellar testnet and require no setup beyond `pnpm install`.
 
 | # | File | What it shows |
 |---|------|---------------|

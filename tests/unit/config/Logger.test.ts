@@ -86,7 +86,7 @@ describe('Logger', () => {
       logger = new Logger('debug');
       logger.info('hello');
 
-      expect(console.info).toHaveBeenCalledWith('[@wirex/stellar-sdk] hello');
+      expect(console.info).toHaveBeenCalledWith('[@vottun/stellar-sdk] hello');
     });
 
     it('should support custom prefix', () => {
@@ -101,7 +101,7 @@ describe('Logger', () => {
       const extra = { key: 'value' };
       logger.error('failed', extra);
 
-      expect(console.error).toHaveBeenCalledWith('[@wirex/stellar-sdk] failed', extra);
+      expect(console.error).toHaveBeenCalledWith('[@vottun/stellar-sdk] failed', extra);
     });
   });
 

@@ -32,7 +32,7 @@ function printResult(label: string, result: { hash: string; ledger: number; succ
 }
 
 async function main() {
-  console.log('=== @wirex/stellar-sdk — Testnet Demo ===\n');
+  console.log('=== @vottun/stellar-sdk — Testnet Demo ===\n');
 
   const sdk = new WirexSDK({
     network: 'testnet',

@@ -1,6 +1,6 @@
 # Error Handling Guide
 
-`@wirex/stellar-sdk` surfaces every failure as a **typed error** that extends a common base class. Callers can `instanceof`-check, switch on a stable `code`, and inspect a `details` payload — no need to parse axios shapes or Stellar XDR error envelopes.
+`@vottun/stellar-sdk` surfaces every failure as a **typed error** that extends a common base class. Callers can `instanceof`-check, switch on a stable `code`, and inspect a `details` payload — no need to parse axios shapes or Stellar XDR error envelopes.
 
 This guide covers:
 - The error class hierarchy
@@ -32,7 +32,7 @@ import {
   ConfigErrorCode,
   WalletErrorCode,
   ApiErrorCode,
-} from '@wirex/stellar-sdk';
+} from '@vottun/stellar-sdk';
 
 try {
   // ...
@@ -148,7 +148,7 @@ These are Stellar protocol codes — none are retried by the SDK (re-submitting 
 ### 1. Account not found
 
 ```ts
-import { ApiError, ApiErrorCode } from '@wirex/stellar-sdk';
+import { ApiError, ApiErrorCode } from '@vottun/stellar-sdk';
 
 try {
   await sdk.api.horizon.getAccount(addr);
@@ -169,7 +169,7 @@ try {
 ### 2. Insufficient balance during payment
 
 ```ts
-import { ApiError, ApiErrorCode } from '@wirex/stellar-sdk';
+import { ApiError, ApiErrorCode } from '@vottun/stellar-sdk';
 
 try {
   await builder.submit();
@@ -206,7 +206,7 @@ If you got `tx_bad_seq` because the tx already landed in a prior submission, the
 The SDK handles this automatically (3.1.3) — it reads `Retry-After`, backs off, and retries. If you still see `RATE_LIMITED` reach your app, all `maxAttempts` retries exhausted. Lower your concurrency:
 
 ```ts
-import { RateLimiter } from '@wirex/stellar-sdk';
+import { RateLimiter } from '@vottun/stellar-sdk';
 
 // Custom limiter for an aggressive use case
 const limiter = new RateLimiter({ maxRequests: 50, windowMs: 5_000 });
@@ -291,7 +291,7 @@ The Logger **never logs secrets** — keys, mnemonics, and signed XDRs are expli
 To present errors in your UI cleanly:
 
 ```ts
-import { StellarError, ApiError, WalletError, ApiErrorCode } from '@wirex/stellar-sdk';
+import { StellarError, ApiError, WalletError, ApiErrorCode } from '@vottun/stellar-sdk';
 
 function toUserMessage(err: unknown): string {
   if (err instanceof ApiError) {

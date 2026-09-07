@@ -112,7 +112,7 @@ You don't have to do anything — the limiter is wired into every request automa
 
 ```ts
 // If you want to inspect or tune it:
-import { RateLimiter } from '@wirex/stellar-sdk';
+import { RateLimiter } from '@vottun/stellar-sdk';
 
 const limiter = new RateLimiter({ maxRequests: 50, windowMs: 5_000 });
 limiter.remaining;        // tokens left
@@ -134,7 +134,7 @@ All API errors throw a typed `ApiError` (never raw axios errors):
 | `TX_BAD_SEQ`, `TX_INSUFFICIENT_BALANCE`, `TX_FAILED` | Stellar tx-level codes |
 
 ```ts
-import { ApiError, ApiErrorCode } from '@wirex/stellar-sdk';
+import { ApiError, ApiErrorCode } from '@vottun/stellar-sdk';
 
 try {
   await sdk.api.horizon.getAccount(addr);

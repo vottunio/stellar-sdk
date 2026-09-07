@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `@wirex/stellar-sdk` follows a **non-custodial architecture**: private keys never leave the client. All transaction signing happens locally, and no secrets are transmitted to any server — whether the Stellar network, a partner BaaS API, or the SDK itself.
+The `@vottun/stellar-sdk` follows a **non-custodial architecture**: private keys never leave the client. All transaction signing happens locally, and no secrets are transmitted to any server — whether the Stellar network, a partner BaaS API, or the SDK itself.
 
 This document explains the pattern and how to apply it in your integration.
 
@@ -37,7 +37,7 @@ This document explains the pattern and how to apply it in your integration.
 Wallets are created or imported locally. The SDK supports three wallet types:
 
 ```typescript
-import { WirexSDK } from '@wirex/stellar-sdk';
+import { WirexSDK } from '@vottun/stellar-sdk';
 
 const sdk = new WirexSDK({ network: 'testnet' });
 
